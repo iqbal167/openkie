@@ -4,21 +4,28 @@ import { MessageCircle } from 'lucide-react'
 
 import { useSourceParam } from '@/hooks/use-source-param'
 import { trackEvent } from '@/lib/analytics'
-import { WHATSAPP_MESSAGE_TEMPLATE, WHATSAPP_NUMBER } from '@/lib/constants'
 
-function useWhatsAppLink() {
+interface WhatsAppProps {
+  whatsappNumber: string
+  whatsappMessageTemplate: string
+}
+
+function useWhatsAppLink({
+  whatsappNumber,
+  whatsappMessageTemplate,
+}: WhatsAppProps) {
   const source = useSourceParam()
   const message = source
-    ? `${WHATSAPP_MESSAGE_TEMPLATE} (dari: ${source})`
-    : WHATSAPP_MESSAGE_TEMPLATE
+    ? `${whatsappMessageTemplate} (dari: ${source})`
+    : whatsappMessageTemplate
   return {
-    href: `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`,
+    href: `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,
     source,
   }
 }
 
-export function WhatsAppCTA() {
-  const { href, source } = useWhatsAppLink()
+export function WhatsAppCTA(props: WhatsAppProps) {
+  const { href, source } = useWhatsAppLink(props)
 
   return (
     <a
@@ -34,8 +41,8 @@ export function WhatsAppCTA() {
   )
 }
 
-export function WhatsAppInlineCTA() {
-  const { href, source } = useWhatsAppLink()
+export function WhatsAppInlineCTA(props: WhatsAppProps) {
+  const { href, source } = useWhatsAppLink(props)
 
   return (
     <section className="py-8 text-center">

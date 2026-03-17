@@ -7,9 +7,13 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion'
 import { trackEvent } from '@/lib/analytics'
-import { METODE_MKJP } from '@/lib/constants'
+import type { MetodeMKJP } from '@/lib/types'
 
-export function EdukasiAccordion() {
+interface EdukasiAccordionProps {
+  metodeMKJP: MetodeMKJP[]
+}
+
+export function EdukasiAccordion({ metodeMKJP }: EdukasiAccordionProps) {
   return (
     <section className="py-8">
       <h2 className="mb-4 text-xl font-bold">Kenali Metode MKJP</h2>
@@ -20,7 +24,7 @@ export function EdukasiAccordion() {
           if (value) trackEvent('accordion_open', { metode: value })
         }}
       >
-        {METODE_MKJP.map((metode, i) => (
+        {metodeMKJP.map((metode, i) => (
           <AccordionItem key={i} value={`item-${i}`}>
             <AccordionTrigger className="text-left text-base font-semibold">
               {metode.nama}

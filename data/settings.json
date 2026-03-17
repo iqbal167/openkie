@@ -1,0 +1,80 @@
+{
+  "siteName": "KIE MKJP Kelurahan Karang Timur",
+  "siteDescription": "Informasi lengkap Metode Kontrasepsi Jangka Panjang (MKJP) untuk warga Kelurahan Karang Timur, Kota Tangerang.",
+  "whatsappNumber": "6281234567890",
+  "whatsappMessageTemplate": "Halo Kader KB, saya ingin konsultasi tentang MKJP.",
+  "videoTestimonials": [
+    { "id": "dQw4w9WgXcQ", "title": "Testimoni Ibu Sari — Pengguna IUD" },
+    { "id": "dQw4w9WgXcQ", "title": "Testimoni Ibu Rina — Pengguna Implan" }
+  ],
+  "metodeMKJP": [
+    {
+      "nama": "IUD (Spiral)",
+      "deskripsi": "Alat kecil berbentuk huruf T yang dipasang di dalam rahim oleh bidan atau dokter. Bisa bertahan 5–10 tahun.",
+      "kelebihan": [
+        "Efektif hingga 99%",
+        "Tidak perlu diingat setiap hari",
+        "Bisa dilepas kapan saja jika ingin hamil lagi"
+      ],
+      "efekSamping": [
+        "Haid bisa lebih banyak di bulan-bulan awal",
+        "Kram ringan setelah pemasangan"
+      ],
+      "mitosVsFakta": {
+        "mitos": "IUD bisa berpindah ke bagian tubuh lain",
+        "fakta": "IUD tetap di dalam rahim dan dipantau secara berkala oleh tenaga kesehatan."
+      }
+    },
+    {
+      "nama": "Implan (Susuk KB)",
+      "deskripsi": "Batang kecil seukuran korek api yang ditanam di bawah kulit lengan atas. Efektif selama 3 tahun.",
+      "kelebihan": [
+        "Sangat efektif (99%)",
+        "Praktis, tidak perlu kontrol rutin",
+        "Cocok untuk ibu menyusui"
+      ],
+      "efekSamping": [
+        "Pola haid bisa berubah (lebih sedikit atau tidak teratur)",
+        "Sedikit memar di area pemasangan"
+      ],
+      "mitosVsFakta": {
+        "mitos": "Implan bisa hilang di dalam tubuh",
+        "fakta": "Implan tetap di tempatnya dan bisa diraba di bawah kulit. Pelepasan dilakukan oleh tenaga terlatih."
+      }
+    },
+    {
+      "nama": "MOW (Tubektomi)",
+      "deskripsi": "Prosedur kecil untuk menutup saluran telur pada wanita. Bersifat permanen dan dilakukan oleh dokter.",
+      "kelebihan": [
+        "Efektif seumur hidup",
+        "Tidak memengaruhi hormon atau siklus haid",
+        "Sekali prosedur, tidak perlu KB lagi"
+      ],
+      "efekSamping": [
+        "Nyeri ringan beberapa hari setelah tindakan",
+        "Risiko kecil seperti prosedur bedah minor pada umumnya"
+      ],
+      "mitosVsFakta": {
+        "mitos": "MOW membuat badan cepat gemuk",
+        "fakta": "MOW tidak memengaruhi hormon sehingga tidak menyebabkan kenaikan berat badan."
+      }
+    },
+    {
+      "nama": "MOP (Vasektomi)",
+      "deskripsi": "Prosedur kecil untuk menutup saluran sperma pada pria. Bersifat permanen, cepat, dan minim rasa sakit.",
+      "kelebihan": [
+        "Prosedur singkat (sekitar 15 menit)",
+        "Tidak memengaruhi kemampuan seksual",
+        "Tanpa hormon"
+      ],
+      "efekSamping": [
+        "Bengkak atau nyeri ringan beberapa hari",
+        "Perlu pemeriksaan ulang untuk memastikan keberhasilan"
+      ],
+      "mitosVsFakta": {
+        "mitos": "Vasektomi sama dengan dikebiri",
+        "fakta": "Vasektomi hanya menutup saluran sperma. Hormon dan fungsi seksual tetap normal."
+      }
+    }
+  ]
+}
