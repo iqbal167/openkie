@@ -4,7 +4,7 @@ import { EdukasiAccordion } from '@/components/edukasi-accordion'
 import { Footer } from '@/components/footer'
 import { HeroSection } from '@/components/hero-section'
 import { VideoSection } from '@/components/video-section'
-import { WhatsAppCTA } from '@/components/whatsapp-cta'
+import { WhatsAppCTA, WhatsAppInlineCTA } from '@/components/whatsapp-cta'
 
 export default function Home() {
   return (
@@ -14,6 +14,9 @@ export default function Home() {
         <VideoSection />
         <EdukasiAccordion />
       </main>
+      <Suspense>
+        <WhatsAppInlineCTA />
+      </Suspense>
       <Footer />
       <Suspense>
         <WhatsAppCTA />
