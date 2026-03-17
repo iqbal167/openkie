@@ -1,3 +1,4 @@
+import { EdukasiAccordion } from '@/components/edukasi-accordion'
 import { Footer } from '@/components/footer'
 import { HeroSection } from '@/components/hero-section'
 import { VideoSection } from '@/components/video-section'
@@ -8,7 +9,7 @@ export default function Home() {
       <main className="flex-1">
         <HeroSection />
         <VideoSection />
-        {/* EdukasiAccordion — Task 3 */}
+        <EdukasiAccordion />
       </main>
       <Footer />
       {/* WhatsAppCTA — Task 4 */}
