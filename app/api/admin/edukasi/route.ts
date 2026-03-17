@@ -27,6 +27,7 @@ export const POST = auth(async (req) => {
     kelebihan: body.kelebihan ?? [],
     efekSamping: body.efekSamping ?? [],
     mitosVsFakta: body.mitosVsFakta ?? { mitos: '', fakta: '' },
+    videoUrl: body.videoUrl ?? '',
   })
   await saveSettings(settings)
   revalidatePath('/')
@@ -51,6 +52,7 @@ export const PUT = auth(async (req) => {
     kelebihan: body.kelebihan ?? [],
     efekSamping: body.efekSamping ?? [],
     mitosVsFakta: body.mitosVsFakta ?? { mitos: '', fakta: '' },
+    videoUrl: body.videoUrl ?? '',
   }
   await saveSettings(settings)
   revalidatePath('/')

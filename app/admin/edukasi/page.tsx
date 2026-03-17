@@ -10,6 +10,7 @@ const emptyForm: MetodeMKJP = {
   kelebihan: [''],
   efekSamping: [''],
   mitosVsFakta: { mitos: '', fakta: '' },
+  videoUrl: '',
 }
 
 export default function EdukasiPage() {
@@ -143,6 +144,12 @@ export default function EdukasiPage() {
           onRemove={(i) => removeListItem('efekSamping', i)}
         />
 
+        <input
+          placeholder="URL YouTube (opsional)"
+          value={form.videoUrl ?? ''}
+          onChange={(e) => setForm((f) => ({ ...f, videoUrl: e.target.value }))}
+          className="rounded-md border px-3 py-2 text-sm"
+        />
         <input
           placeholder="Mitos"
           value={form.mitosVsFakta.mitos}

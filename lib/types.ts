@@ -9,6 +9,7 @@ export interface MetodeMKJP {
   kelebihan: string[]
   efekSamping: string[]
   mitosVsFakta: { mitos: string; fakta: string }
+  videoUrl?: string
 }
 
 export interface SiteSettings {

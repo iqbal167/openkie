@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 
-import { EdukasiAccordion } from '@/components/edukasi-accordion'
+import { EdukasiSection } from '@/components/edukasi-section'
 import { Footer } from '@/components/footer'
 import { HeroSection } from '@/components/hero-section'
 import { VideoSection } from '@/components/video-section'
@@ -25,7 +25,7 @@ export default async function Home() {
           siteDescription={settings.siteDescription}
         />
         <VideoSection videoTestimonials={settings.videoTestimonials} />
-        <EdukasiAccordion metodeMKJP={settings.metodeMKJP} />
+        <EdukasiSection metodeMKJP={settings.metodeMKJP} />
       </main>
       <Suspense>
         <WhatsAppInlineCTA {...waProps} />
