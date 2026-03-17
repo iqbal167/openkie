@@ -1,6 +1,7 @@
 'use client'
 
 import type { VideoTestimonial } from '@/lib/types'
+import { extractYouTubeId } from '@/lib/utils'
 
 interface VideoSectionProps {
   videoTestimonials: VideoTestimonial[]
@@ -16,7 +17,7 @@ export function VideoSection({ videoTestimonials }: VideoSectionProps) {
             <p className="mb-2 text-sm font-medium">{video.title}</p>
             <div className="bg-muted relative aspect-[9/16] overflow-hidden rounded-lg">
               <iframe
-                src={`https://www.youtube.com/embed/${video.id}`}
+                src={`https://www.youtube.com/embed/${extractYouTubeId(video.id)}`}
                 title={video.title}
                 loading="lazy"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

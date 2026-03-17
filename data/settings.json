@@ -4,8 +4,14 @@
   "whatsappNumber": "6281234567890",
   "whatsappMessageTemplate": "Halo Kader KB, saya ingin konsultasi tentang MKJP.",
   "videoTestimonials": [
-    { "id": "dQw4w9WgXcQ", "title": "Testimoni Ibu Sari — Pengguna IUD" },
-    { "id": "dQw4w9WgXcQ", "title": "Testimoni Ibu Rina — Pengguna Implan" }
+    {
+      "id": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "title": "Testimoni Ibu Sari — Pengguna IUD"
+    },
+    {
+      "id": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "title": "Testimoni Ibu Rina — Pengguna Implan"
+    }
   ],
   "metodeMKJP": [
     {

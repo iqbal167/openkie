@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 interface SettingsForm {
   siteName: string
@@ -20,11 +20,16 @@ export default function SettingsPage() {
     'idle'
   )
 
-  useEffect(() => {
-    fetch('/api/admin/settings')
-      .then((r) => r.json())
-      .then(setForm)
+  const loadSettings = useCallback(async () => {
+    const res = await fetch('/api/admin/settings')
+    const data = await res.json()
+    setForm(data)
   }, [])
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void loadSettings()
+  }, [loadSettings])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

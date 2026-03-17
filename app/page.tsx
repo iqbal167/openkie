@@ -7,6 +7,8 @@ import { VideoSection } from '@/components/video-section'
 import { WhatsAppCTA, WhatsAppInlineCTA } from '@/components/whatsapp-cta'
 import { getSettings } from '@/lib/data'
 
+export const revalidate = 0
+
 export default async function Home() {
   const settings = await getSettings()
 

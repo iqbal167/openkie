@@ -1,3 +1,4 @@
+import { revalidatePath } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 import { auth } from '@/lib/auth'
@@ -33,5 +34,6 @@ export const PUT = auth(async (req) => {
   }
 
   await saveSettings(updated)
+  revalidatePath('/')
   return NextResponse.json({ success: true })
 })

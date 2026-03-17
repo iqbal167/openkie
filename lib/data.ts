@@ -1,15 +1,33 @@
-import fs from 'fs/promises'
-import path from 'path'
+import { head, put } from '@vercel/blob'
 
 import type { SiteSettings } from '@/lib/types'
 
-const DATA_FILE_PATH = path.join(process.cwd(), 'data', 'settings.json')
+const BLOB_KEY = 'settings.json'
+
+const defaultSettings: SiteSettings = {
+  siteName: 'KIE MKJP Kelurahan Karang Timur',
+  siteDescription:
+    'Informasi lengkap Metode Kontrasepsi Jangka Panjang (MKJP) untuk warga Kelurahan Karang Timur, Kota Tangerang.',
+  whatsappNumber: '6281234567890',
+  whatsappMessageTemplate: 'Halo Kader KB, saya ingin konsultasi tentang MKJP.',
+  videoTestimonials: [],
+  metodeMKJP: [],
+}
 
 export async function getSettings(): Promise<SiteSettings> {
-  const raw = await fs.readFile(DATA_FILE_PATH, 'utf-8')
-  return JSON.parse(raw) as SiteSettings
+  try {
+    const meta = await head(BLOB_KEY)
+    const res = await fetch(meta.url, { cache: 'no-store' })
+    return (await res.json()) as SiteSettings
+  } catch {
+    return defaultSettings
+  }
 }
 
 export async function saveSettings(settings: SiteSettings): Promise<void> {
-  await fs.writeFile(DATA_FILE_PATH, JSON.stringify(settings, null, 2), 'utf-8')
+  await put(BLOB_KEY, JSON.stringify(settings, null, 2), {
+    access: 'public',
+    addRandomSuffix: false,
+    contentType: 'application/json',
+  })
 }
