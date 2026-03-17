@@ -28,6 +28,7 @@ export async function saveSettings(settings: SiteSettings): Promise<void> {
   await put(BLOB_KEY, JSON.stringify(settings, null, 2), {
     access: 'public',
     addRandomSuffix: false,
+    allowOverwrite: true,
     contentType: 'application/json',
   })
 }
