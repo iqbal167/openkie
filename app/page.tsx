@@ -1,7 +1,10 @@
+import { Suspense } from 'react'
+
 import { EdukasiAccordion } from '@/components/edukasi-accordion'
 import { Footer } from '@/components/footer'
 import { HeroSection } from '@/components/hero-section'
 import { VideoSection } from '@/components/video-section'
+import { WhatsAppCTA } from '@/components/whatsapp-cta'
 
 export default function Home() {
   return (
@@ -12,7 +15,9 @@ export default function Home() {
         <EdukasiAccordion />
       </main>
       <Footer />
-      {/* WhatsAppCTA — Task 4 */}
+      <Suspense>
+        <WhatsAppCTA />
+      </Suspense>
     </div>
   )
 }
