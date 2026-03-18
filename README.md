@@ -1,6 +1,6 @@
-# KIE Digital
+# OpenKIE
 
-Platform KIE (Komunikasi, Informasi, Edukasi) digital berbasis QR code. Aplikasi mobile-first untuk media belajar dan sharing materi edukasi, dilengkapi sistem pre-test/post-test dan dashboard admin.
+Platform KIE (Komunikasi, Informasi, Edukasi) digital open-source yang bisa di-deploy sendiri (self-hosted). Aplikasi mobile-first untuk media belajar dan sharing materi edukasi, dilengkapi sistem pre-test/post-test dan dashboard admin.
 
 ![Landing Page](docs/screenshot-landing.png)
 
