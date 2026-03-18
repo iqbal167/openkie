@@ -33,29 +33,30 @@ Cara paling mudah — klik tombol di bawah:
 
 ### Langkah-langkah:
 
-1. Klik tombol **Deploy with Vercel** di atas
-2. Login/daftar akun Vercel jika belum punya
+1. Buat akun [Vercel](https://vercel.com/signup) jika belum punya (gratis)
+2. Klik tombol **Deploy with Vercel** di atas
+3. Login ke akun Vercel
 
    ![Vercel Login](docs/deploy-01-login.png)
 
-3. Vercel akan otomatis clone repo ke akun kamu
-4. Isi `AUTH_SECRET` — klik link [secretkeygen.vercel.app](https://secretkeygen.vercel.app/) yang tersedia, copy hasilnya, paste
+4. Vercel akan otomatis clone repo ke akun kamu
+5. Isi `AUTH_SECRET` — klik link [secretkeygen.vercel.app](https://secretkeygen.vercel.app/) yang tersedia, copy hasilnya, paste
 
    ![Set Environment Variable](docs/deploy-02-env.png)
 
-5. Blob store otomatis dibuat oleh Vercel — env var `BLOB_READ_WRITE_TOKEN` langsung terisi tanpa perlu setup manual
-6. Klik **Deploy** dan tunggu sampai selesai
+6. Blob store otomatis dibuat oleh Vercel — env var `BLOB_READ_WRITE_TOKEN` langsung terisi tanpa perlu setup manual
+7. Klik **Deploy** dan tunggu sampai selesai
 
    ![Deploy Success](docs/deploy-03-success.png)
 
-7. Buka URL project → akses `/admin` → akan redirect ke halaman **Setup Admin**
-8. Buat username dan password (min. 6 karakter)
+8. Buka URL project → akses `/admin` → akan redirect ke halaman **Setup Admin**
+9. Buat username dan password (min. 6 karakter)
 
    ![Setup Admin](docs/deploy-04-setup.png)
 
-9. Login dengan credentials yang dibuat — selesai! 🎉
+10. Login dengan credentials yang dibuat — selesai! 🎉
 
-   ![Admin Dashboard](docs/deploy-05-dashboard.png)
+    ![Admin Dashboard](docs/deploy-05-dashboard.png)
 
 ---
 
