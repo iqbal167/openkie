@@ -51,3 +51,8 @@ export interface EducationMedia {
   title: string
   videoUrl: string
 }
+
+export interface AdminUser {
+  username: string
+  passwordHash: string
+}

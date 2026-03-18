@@ -1,36 +1,174 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# KIE Digital
 
-## Getting Started
+Platform KIE (Komunikasi, Informasi, Edukasi) digital berbasis QR code. Aplikasi mobile-first untuk media belajar dan sharing materi edukasi, dilengkapi sistem pre-test/post-test dan dashboard admin.
 
-First, run the development server:
+![Landing Page](docs/screenshot-landing.png)
+
+## Fitur
+
+- 📱 Landing page mobile-first dengan QR code
+- 🎬 Video sorotan (highlight) dengan YouTube embed
+- 📚 Materi edukasi dengan modal detail
+- ✅ Sistem quiz pre-test & post-test
+- ⚙️ Dashboard admin untuk kelola semua konten
+- 🔐 First-run setup — buat akun admin saat pertama deploy
+- ✏️ Semua teks dan judul bisa dikustomisasi dari admin
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org) (App Router)
+- TypeScript
+- Tailwind CSS
+- shadcn/ui
+- [Vercel Blob](https://vercel.com/docs/storage/vercel-blob) (storage)
+- NextAuth v5 (autentikasi)
+
+---
+
+## Deploy ke Vercel (One-Click)
+
+Cara paling mudah — klik tombol di bawah:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/USERNAME/REPO&env=AUTH_SECRET&envDescription=Secret%20untuk%20enkripsi%20session.%20Generate%20di%20link%20berikut.&envLink=https://generate-secret.vercel.app/32&stores=[{"type":"blob"}])
+
+> ⚠️ Ganti `USERNAME/REPO` di URL tombol dengan repo GitHub kamu.
+
+### Langkah-langkah:
+
+1. Klik tombol **Deploy with Vercel** di atas
+2. Login/daftar akun Vercel jika belum punya
+
+   ![Vercel Login](docs/deploy-01-login.png)
+
+3. Vercel akan otomatis clone repo ke akun kamu
+4. Isi `AUTH_SECRET` — klik link **generate-secret.vercel.app** yang tersedia, copy hasilnya, paste
+
+   ![Set Environment Variable](docs/deploy-02-env.png)
+
+5. Blob store otomatis dibuat oleh Vercel — env var `BLOB_READ_WRITE_TOKEN` langsung terisi tanpa perlu setup manual
+6. Klik **Deploy** dan tunggu sampai selesai
+
+   ![Deploy Success](docs/deploy-03-success.png)
+
+7. Buka URL project → akses `/admin` → akan redirect ke halaman **Setup Admin**
+8. Buat username dan password (min. 6 karakter)
+
+   ![Setup Admin](docs/deploy-04-setup.png)
+
+9. Login dengan credentials yang dibuat — selesai! 🎉
+
+   ![Admin Dashboard](docs/deploy-05-dashboard.png)
+
+---
+
+## Deploy Manual (via GitHub)
+
+Jika ingin fork repo terlebih dahulu:
+
+### 1. Fork & Clone
+
+```bash
+git clone https://github.com/<username>/<repo>.git
+cd <repo>
+```
+
+### 2. Buat Project di Vercel
+
+1. Buka [vercel.com/new](https://vercel.com/new)
+2. Import repo GitHub yang sudah di-fork
+3. Framework Preset: **Next.js** (otomatis terdeteksi)
+
+### 3. Buat Blob Store
+
+1. Di dashboard Vercel, buka project → tab **Storage**
+2. Klik **Create Database** → pilih **Blob**
+3. Beri nama (misal: `kie-digital-blob`) → **Create**
+4. Blob store otomatis terhubung ke project, env var `BLOB_READ_WRITE_TOKEN` otomatis ditambahkan
+
+   ![Buat Blob Store](docs/manual-01-blob.png)
+
+### 4. Set Environment Variable
+
+Di Vercel dashboard → project → **Settings** → **Environment Variables**, tambahkan:
+
+| Variable      | Nilai                      | Keterangan                                                                                              |
+| ------------- | -------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `AUTH_SECRET` | Random string 32+ karakter | Untuk enkripsi session. Generate di [generate-secret.vercel.app](https://generate-secret.vercel.app/32) |
+
+> `BLOB_READ_WRITE_TOKEN` sudah otomatis dari langkah 3.
+
+![Set Env Var](docs/manual-02-env.png)
+
+### 5. Deploy
+
+Klik **Deploy**. Setelah selesai, buka URL project.
+
+### 6. Setup Admin
+
+1. Buka `https://<domain>/admin`
+2. Akan redirect ke halaman **Setup Admin**
+3. Buat username dan password (min. 6 karakter)
+4. Setelah setup, login dengan credentials yang dibuat
+5. Halaman setup tidak bisa diakses lagi setelah admin dibuat
+
+---
+
+## Development Lokal
+
+### Prasyarat
+
+- Node.js 18+
+- npm
+
+### Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Copy env
+cp .env.example .env.local
+```
+
+Edit `.env.local`:
+
+```env
+AUTH_SECRET=random-string-minimal-32-karakter
+BLOB_READ_WRITE_TOKEN=vercel_blob_rw_xxx  # dari Vercel Blob dashboard
+```
+
+> Untuk mendapatkan `BLOB_READ_WRITE_TOKEN`, buat Blob store di Vercel dashboard lalu copy token-nya.
+
+### Jalankan
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Buka [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Struktur Admin
 
-## Learn More
+![Admin Menu](docs/admin-menu.png)
 
-To learn more about Next.js, take a look at the following resources:
+| Menu     | Fungsi                                                 |
+| -------- | ------------------------------------------------------ |
+| Settings | Nama situs, deskripsi, WhatsApp, judul section, footer |
+| Sorotan  | Kelola video sorotan (YouTube)                         |
+| Edukasi  | Kelola materi edukasi                                  |
+| Media    | Video edukasi (hanya admin)                            |
+| Quiz     | Kelola soal pre-test & post-test                       |
+| Peserta  | Lihat data peserta & skor quiz                         |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment Variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Variable                | Wajib | Keterangan                    |
+| ----------------------- | ----- | ----------------------------- |
+| `BLOB_READ_WRITE_TOKEN` | ✅    | Token Vercel Blob             |
+| `AUTH_SECRET`           | ✅    | Secret untuk NextAuth session |
 
-## Deploy on Vercel
+## Lisensi
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT

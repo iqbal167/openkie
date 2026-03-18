@@ -2,6 +2,7 @@ import { list, put } from '@vercel/blob'
 import { unstable_noStore as noStore } from 'next/cache'
 
 import type {
+  AdminUser,
   EducationMedia,
   Participant,
   QuizData,
@@ -14,6 +15,7 @@ const QUIZ_BLOB_KEY = 'quiz.json'
 const PARTICIPANTS_BLOB_KEY = 'participants.json'
 const MEDIA_BLOB_KEY = 'media-edukasi.json'
 const HIGHLIGHT_BLOB_KEY = 'highlight.json'
+const ADMIN_BLOB_KEY = 'admin.json'
 
 // Per-request cache: writeBlob stores here so a subsequent readBlob
 // in the same request gets fresh data (avoids CDN staleness).
@@ -105,3 +107,8 @@ export const getHighlights = () =>
   readBlob<VideoTestimonial[]>(HIGHLIGHT_BLOB_KEY, [])
 export const saveHighlights = (d: VideoTestimonial[]) =>
   writeBlob(HIGHLIGHT_BLOB_KEY, d)
+
+// --- Admin ---
+
+export const getAdmin = () => readBlob<AdminUser | null>(ADMIN_BLOB_KEY, null)
+export const saveAdmin = (a: AdminUser) => writeBlob(ADMIN_BLOB_KEY, a)
