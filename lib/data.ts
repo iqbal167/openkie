@@ -34,7 +34,8 @@ async function readBlob<T>(key: string, fallback: T): Promise<T> {
   try {
     const { blobs } = await list({ prefix: key, limit: 1 })
     if (!blobs.length) return fallback
-    const res = await fetch(blobs[0].downloadUrl, { cache: 'no-store' })
+    const url = `${blobs[0].downloadUrl}${blobs[0].downloadUrl.includes('?') ? '&' : '?'}t=${Date.now()}`
+    const res = await fetch(url, { cache: 'no-store' })
     return (await res.json()) as T
   } catch {
     return fallback

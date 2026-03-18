@@ -8,7 +8,7 @@ import { VideoSection } from '@/components/video-section'
 import { WhatsAppCTA, WhatsAppInlineCTA } from '@/components/whatsapp-cta'
 import { getEducationMaterials, getHighlights, getSettings } from '@/lib/data'
 
-export const revalidate = 0
+export const dynamic = 'force-dynamic'
 
 export default async function Home() {
   const [settings, highlights, educationMaterials] = await Promise.all([
