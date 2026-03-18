@@ -5,10 +5,10 @@ import { NextResponse } from 'next/server'
 import { getParticipants, saveParticipants } from '@/lib/data'
 
 export async function POST(req: Request) {
-  const { phone, nama } = await req.json()
-  if (!phone || !nama)
+  const { phone, name } = await req.json()
+  if (!phone || !name)
     return NextResponse.json(
-      { error: 'Phone dan nama wajib diisi' },
+      { error: 'Phone and name wajib diisi' },
       { status: 400 }
     )
 
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
 
   const participant = {
     phone,
-    nama,
+    name,
     registeredAt: new Date().toISOString(),
   }
   participants.push(participant)

@@ -9,14 +9,7 @@ import { getSettings, saveSettings } from '@/lib/data'
 export const GET = auth(async (req) => {
   if (!req.auth)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-
-  const settings = await getSettings()
-  return NextResponse.json({
-    siteName: settings.siteName,
-    siteDescription: settings.siteDescription,
-    whatsappNumber: settings.whatsappNumber,
-    whatsappMessageTemplate: settings.whatsappMessageTemplate,
-  })
+  return NextResponse.json(await getSettings())
 })
 
 export const PUT = auth(async (req) => {
@@ -26,16 +19,7 @@ export const PUT = auth(async (req) => {
   const body = await req.json()
   const settings = await getSettings()
 
-  const updated = {
-    ...settings,
-    siteName: body.siteName ?? settings.siteName,
-    siteDescription: body.siteDescription ?? settings.siteDescription,
-    whatsappNumber: body.whatsappNumber ?? settings.whatsappNumber,
-    whatsappMessageTemplate:
-      body.whatsappMessageTemplate ?? settings.whatsappMessageTemplate,
-  }
-
-  await saveSettings(updated)
+  await saveSettings({ ...settings, ...body })
   revalidatePath('/')
   return NextResponse.json({ success: true })
 })

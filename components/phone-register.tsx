@@ -3,12 +3,12 @@
 import { useState } from 'react'
 
 interface PhoneRegisterProps {
-  onRegistered: (phone: string, nama: string) => void
+  onRegistered: (phone: string, name: string) => void
 }
 
 export function PhoneRegister({ onRegistered }: PhoneRegisterProps) {
   const [phone, setPhone] = useState('')
-  const [nama, setNama] = useState('')
+  const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -19,8 +19,8 @@ export function PhoneRegister({ onRegistered }: PhoneRegisterProps) {
       setError('Format nomor WA tidak valid (08xxx atau 628xxx)')
       return
     }
-    if (!nama.trim()) {
-      setError('Nama wajib diisi')
+    if (!name.trim()) {
+      setError('Name is required')
       return
     }
 
@@ -30,11 +30,11 @@ export function PhoneRegister({ onRegistered }: PhoneRegisterProps) {
       const res = await fetch('/api/quiz/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: cleaned, nama: nama.trim() }),
+        body: JSON.stringify({ phone: cleaned, name: name.trim() }),
       })
       if (res.ok) {
         localStorage.setItem('quiz_phone', cleaned)
-        onRegistered(cleaned, nama.trim())
+        onRegistered(cleaned, name.trim())
       } else {
         setError('Gagal mendaftar, coba lagi.')
       }
@@ -59,8 +59,8 @@ export function PhoneRegister({ onRegistered }: PhoneRegisterProps) {
       />
       <input
         placeholder="Nama Lengkap"
-        value={nama}
-        onChange={(e) => setNama(e.target.value)}
+        value={name}
+        onChange={(e) => setName(e.target.value)}
         className="rounded-lg border px-4 py-3 text-sm"
       />
       {error && <p className="text-sm text-red-500">{error}</p>}

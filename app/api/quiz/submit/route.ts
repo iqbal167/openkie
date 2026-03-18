@@ -40,7 +40,7 @@ export async function POST(req: Request) {
 
   const score = questions.reduce(
     (acc: number, q, i: number) =>
-      acc + (q.jawabanBenar === answers[i] ? 1 : 0),
+      acc + (q.correctAnswer === answers[i] ? 1 : 0),
     0
   )
 

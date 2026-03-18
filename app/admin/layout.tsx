@@ -6,8 +6,8 @@ import { signOut } from 'next-auth/react'
 
 const navLinks = [
   { href: '/admin/settings', label: 'Settings' },
+  { href: '/admin/videos', label: 'Sorotan' },
   { href: '/admin/edukasi', label: 'Edukasi' },
-  { href: '/admin/videos', label: 'Testimoni' },
   { href: '/admin/media-edukasi', label: 'Media' },
   { href: '/admin/quiz', label: 'Quiz' },
   { href: '/admin/participants', label: 'Peserta' },

@@ -63,7 +63,7 @@ export default function ParticipantsPage() {
             <tbody>
               {items.map((p) => (
                 <tr key={p.phone} className="border-b">
-                  <td className="px-2 py-2">{p.nama}</td>
+                  <td className="px-2 py-2">{p.name}</td>
                   <td className="px-2 py-2">{p.phone}</td>
                   <td className="px-2 py-2">
                     {p.preTest ? `${p.preTest.score}/${p.preTest.total}` : '-'}

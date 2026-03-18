@@ -8,6 +8,9 @@ interface SettingsForm {
   whatsappNumber: string
   whatsappMessageTemplate: string
   quizEnabled: boolean
+  highlightTitle: string
+  educationTitle: string
+  footerText: string
 }
 
 export default function SettingsPage() {
@@ -17,6 +20,9 @@ export default function SettingsPage() {
     whatsappNumber: '',
     whatsappMessageTemplate: '',
     quizEnabled: false,
+    highlightTitle: '',
+    educationTitle: '',
+    footerText: '',
   })
   const [status, setStatus] = useState<'idle' | 'saving' | 'success' | 'error'>(
     'idle'
@@ -25,7 +31,13 @@ export default function SettingsPage() {
   const loadSettings = useCallback(async () => {
     const res = await fetch(`/api/admin/settings?t=${Date.now()}`)
     const data = await res.json()
-    setForm({ ...data, quizEnabled: data.quizEnabled ?? false })
+    setForm({
+      ...data,
+      quizEnabled: data.quizEnabled ?? false,
+      highlightTitle: data.highlightTitle ?? '',
+      educationTitle: data.educationTitle ?? '',
+      footerText: data.footerText ?? '',
+    })
   }, [])
 
   useEffect(() => {
@@ -49,11 +61,14 @@ export default function SettingsPage() {
     setStatus('idle')
   }
 
-  const fields: {
+  type Field = {
     key: Exclude<keyof SettingsForm, 'quizEnabled'>
     label: string
     textarea?: boolean
-  }[] = [
+  }
+
+  const featuredFields: Field[] = [
+    { key: 'highlightTitle', label: 'Judul Section Sorotan' },
     { key: 'siteName', label: 'Nama Situs' },
     { key: 'siteDescription', label: 'Deskripsi Situs', textarea: true },
     { key: 'whatsappNumber', label: 'Nomor WhatsApp' },
@@ -62,47 +77,72 @@ export default function SettingsPage() {
       label: 'Template Pesan WhatsApp',
       textarea: true,
     },
+    { key: 'footerText', label: 'Teks Footer' },
   ]
+
+  const edukasiFields: Field[] = [
+    { key: 'educationTitle', label: 'Judul Section Edukasi' },
+  ]
+
+  function renderFields(fields: Field[]) {
+    return fields.map(({ key, label, textarea }) => (
+      <label key={key} className="flex flex-col gap-1">
+        <span className="text-sm font-medium">{label}</span>
+        {textarea ? (
+          <textarea
+            value={form[key]}
+            onChange={(e) => update(key, e.target.value)}
+            rows={3}
+            className="rounded-md border px-3 py-2 text-sm"
+          />
+        ) : (
+          <input
+            value={form[key]}
+            onChange={(e) => update(key, e.target.value)}
+            className="rounded-md border px-3 py-2 text-sm"
+          />
+        )}
+      </label>
+    ))
+  }
 
   return (
     <div>
-      <h2 className="mb-4 text-lg font-bold">Pengaturan Umum</h2>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {fields.map(({ key, label, textarea }) => (
-          <label key={key} className="flex flex-col gap-1">
-            <span className="text-sm font-medium">{label}</span>
-            {textarea ? (
-              <textarea
-                value={form[key]}
-                onChange={(e) => update(key, e.target.value)}
-                rows={3}
-                className="rounded-md border px-3 py-2 text-sm"
-              />
-            ) : (
-              <input
-                value={form[key]}
-                onChange={(e) => update(key, e.target.value)}
-                className="rounded-md border px-3 py-2 text-sm"
-              />
-            )}
-          </label>
-        ))}
-        <label className="flex items-center justify-between rounded-md border px-4 py-3">
-          <div>
-            <span className="text-sm font-medium">Pre-Test & Post-Test</span>
-            <p className="text-muted-foreground text-xs">
-              Aktifkan quiz sebelum dan sesudah materi edukasi
-            </p>
+      <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+        <section>
+          <h2 className="mb-3 text-lg font-bold">Featured</h2>
+          <div className="flex flex-col gap-4">
+            {renderFields(featuredFields)}
           </div>
-          <input
-            type="checkbox"
-            checked={form.quizEnabled}
-            onChange={(e) =>
-              setForm((f) => ({ ...f, quizEnabled: e.target.checked }))
-            }
-            className="accent-primary h-5 w-5"
-          />
-        </label>
+        </section>
+
+        <hr />
+
+        <section>
+          <h2 className="mb-3 text-lg font-bold">Edukasi</h2>
+          <div className="flex flex-col gap-4">
+            {renderFields(edukasiFields)}
+            <label className="flex items-center justify-between rounded-md border px-4 py-3">
+              <div>
+                <span className="text-sm font-medium">
+                  Pre-Test & Post-Test
+                </span>
+                <p className="text-muted-foreground text-xs">
+                  Aktifkan quiz sebelum dan sesudah materi edukasi
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={form.quizEnabled}
+                onChange={(e) =>
+                  setForm((f) => ({ ...f, quizEnabled: e.target.checked }))
+                }
+                className="accent-primary h-5 w-5"
+              />
+            </label>
+          </div>
+        </section>
+
         <button
           type="submit"
           disabled={status === 'saving'}

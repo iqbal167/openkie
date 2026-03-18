@@ -3,9 +3,9 @@ export interface VideoTestimonial {
   title: string
 }
 
-export interface MetodeMKJP {
-  nama: string
-  deskripsi: string
+export interface EducationMaterial {
+  name: string
+  description: string
   videoUrl?: string
 }
 
@@ -14,16 +14,18 @@ export interface SiteSettings {
   siteDescription: string
   whatsappNumber: string
   whatsappMessageTemplate: string
-  videoTestimonials: VideoTestimonial[]
-  metodeMKJP: MetodeMKJP[]
+  educationMaterials: EducationMaterial[]
   quizEnabled?: boolean
+  highlightTitle?: string
+  educationTitle?: string
+  footerText?: string
 }
 
 export interface Question {
   id: string
-  soal: string
-  pilihan: string[]
-  jawabanBenar: number
+  question: string
+  options: string[]
+  correctAnswer: number
 }
 
 export interface QuizData {
@@ -39,13 +41,13 @@ export interface QuizResult {
 
 export interface Participant {
   phone: string
-  nama: string
+  name: string
   preTest?: QuizResult
   postTest?: QuizResult
   registeredAt: string
 }
 
-export interface MediaEdukasi {
+export interface EducationMedia {
   title: string
   videoUrl: string
 }

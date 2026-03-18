@@ -4,17 +4,17 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { ConfirmDelete } from '@/components/confirm-delete'
 import { SkeletonList } from '@/components/skeleton'
-import type { MetodeMKJP } from '@/lib/types'
+import type { EducationMaterial } from '@/lib/types'
 
-const emptyForm: MetodeMKJP = {
-  nama: '',
-  deskripsi: '',
+const emptyForm: EducationMaterial = {
+  name: '',
+  description: '',
   videoUrl: '',
 }
 
 export default function EdukasiPage() {
-  const [items, setItems] = useState<MetodeMKJP[]>([])
-  const [form, setForm] = useState<MetodeMKJP>({ ...emptyForm })
+  const [items, setItems] = useState<EducationMaterial[]>([])
+  const [form, setForm] = useState<EducationMaterial>({ ...emptyForm })
   const [editIndex, setEditIndex] = useState<number | null>(null)
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(true)
@@ -33,7 +33,7 @@ export default function EdukasiPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!form.nama || !form.deskripsi) return
+    if (!form.name || !form.description) return
 
     const isEdit = editIndex !== null
     const res = await fetch('/api/admin/edukasi', {
@@ -82,15 +82,15 @@ export default function EdukasiPage() {
       <form onSubmit={handleSubmit} className="mb-6 flex flex-col gap-3">
         <input
           placeholder="Judul"
-          value={form.nama}
-          onChange={(e) => setForm((f) => ({ ...f, nama: e.target.value }))}
+          value={form.name}
+          onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
           className="rounded-md border px-3 py-2 text-sm"
         />
         <textarea
           placeholder="Deskripsi"
-          value={form.deskripsi}
+          value={form.description}
           onChange={(e) =>
-            setForm((f) => ({ ...f, deskripsi: e.target.value }))
+            setForm((f) => ({ ...f, description: e.target.value }))
           }
           rows={2}
           className="rounded-md border px-3 py-2 text-sm"
@@ -134,9 +134,9 @@ export default function EdukasiPage() {
               className="flex items-center justify-between rounded-md border p-3"
             >
               <div className="text-sm">
-                <p className="font-medium">{item.nama}</p>
+                <p className="font-medium">{item.name}</p>
                 <p className="text-muted-foreground line-clamp-1">
-                  {item.deskripsi}
+                  {item.description}
                 </p>
               </div>
               <div className="flex gap-2">

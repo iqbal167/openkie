@@ -6,8 +6,8 @@ import { Skeleton } from '@/components/skeleton'
 
 interface QuizQuestion {
   id: string
-  soal: string
-  pilihan: string[]
+  question: string
+  options: string[]
 }
 
 interface QuizFormProps {
@@ -96,9 +96,9 @@ export function QuizForm({ type, phone, onComplete }: QuizFormProps) {
       {questions.map((q, qi) => (
         <div key={q.id} className="flex flex-col gap-2">
           <p className="text-sm font-medium">
-            {qi + 1}. {q.soal}
+            {qi + 1}. {q.question}
           </p>
-          {q.pilihan.map((p, pi) => (
+          {q.options.map((p, pi) => (
             <label
               key={pi}
               className={`flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-3 text-sm transition-colors ${answers[qi] === pi ? 'border-primary bg-primary/5 font-medium' : ''}`}

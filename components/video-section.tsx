@@ -12,13 +12,13 @@ interface VideoSectionProps {
 export function VideoSection({ videoTestimonials }: VideoSectionProps) {
   const [showAll, setShowAll] = useState(false)
 
-  if (videoTestimonials.length === 0) return null
+  if (videoTestimonials.length === 0)
+    return <p className="text-muted-foreground text-sm">Belum ada data.</p>
 
   const visible = showAll ? videoTestimonials : [videoTestimonials[0]]
 
   return (
-    <section className="py-8">
-      <h2 className="mb-4 text-xl font-bold">Testimoni Sang Jawara</h2>
+    <>
       <div className="flex flex-col gap-6">
         {visible.map((video) => (
           <div key={video.id + video.title}>
@@ -41,9 +41,9 @@ export function VideoSection({ videoTestimonials }: VideoSectionProps) {
           onClick={() => setShowAll(true)}
           className="mt-4 w-full rounded-lg border py-3 text-sm font-medium transition-colors hover:bg-gray-50"
         >
-          Lihat {videoTestimonials.length - 1} Testimoni Lainnya
+          Lihat {videoTestimonials.length - 1} Video Lainnya
         </button>
       )}
-    </section>
+    </>
   )
 }

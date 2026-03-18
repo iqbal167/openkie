@@ -6,12 +6,15 @@ import { HeroSection } from '@/components/hero-section'
 import { QuizGate } from '@/components/quiz-gate'
 import { VideoSection } from '@/components/video-section'
 import { WhatsAppCTA, WhatsAppInlineCTA } from '@/components/whatsapp-cta'
-import { getSettings } from '@/lib/data'
+import { getHighlights, getSettings } from '@/lib/data'
 
 export const revalidate = 0
 
 export default async function Home() {
-  const settings = await getSettings()
+  const [settings, highlights] = await Promise.all([
+    getSettings(),
+    getHighlights(),
+  ])
 
   const waProps = {
     whatsappNumber: settings.whatsappNumber,
@@ -25,19 +28,35 @@ export default async function Home() {
           siteName={settings.siteName}
           siteDescription={settings.siteDescription}
         />
-        <VideoSection videoTestimonials={settings.videoTestimonials} />
+
+        {/* Sorotan (Featured) */}
+        <section className="py-6">
+          <h2 className="mb-4 text-xl font-bold">
+            {settings.highlightTitle || 'Sorotan'}
+          </h2>
+          <VideoSection videoTestimonials={highlights} />
+        </section>
+
+        {/* Edukasi */}
         {settings.quizEnabled ? (
-          <QuizGate>
-            <EdukasiSection metodeMKJP={settings.metodeMKJP} />
+          <QuizGate educationTitle={settings.educationTitle}>
+            <EdukasiSection
+              educationMaterials={settings.educationMaterials}
+              educationTitle={settings.educationTitle}
+            />
           </QuizGate>
         ) : (
-          <EdukasiSection metodeMKJP={settings.metodeMKJP} />
+          <EdukasiSection
+            educationMaterials={settings.educationMaterials}
+            educationTitle={settings.educationTitle}
+          />
         )}
+
+        <Suspense>
+          <WhatsAppInlineCTA {...waProps} />
+        </Suspense>
       </main>
-      <Suspense>
-        <WhatsAppInlineCTA {...waProps} />
-      </Suspense>
-      <Footer />
+      <Footer footerText={settings.footerText} />
       <Suspense>
         <WhatsAppCTA {...waProps} />
       </Suspense>

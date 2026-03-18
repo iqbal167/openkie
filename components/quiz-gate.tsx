@@ -11,12 +11,13 @@ type Step = 'register' | 'preTest' | 'edukasi' | 'postTest' | 'done'
 
 interface QuizGateProps {
   children: React.ReactNode
+  educationTitle?: string
 }
 
-export function QuizGate({ children }: QuizGateProps) {
+export function QuizGate({ children, educationTitle }: QuizGateProps) {
   const [step, setStep] = useState<Step>('register')
   const [phone, setPhone] = useState('')
-  const [nama, setNama] = useState('')
+  const [name, setName] = useState('')
   const [preScore, setPreScore] = useState<string | null>(null)
   const [postScore, setPostScore] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
@@ -33,7 +34,7 @@ export function QuizGate({ children }: QuizGateProps) {
         participant: Participant
       }
       const pt = data.participant
-      setNama(pt.nama)
+      setName(pt.name)
 
       if (pt.preTest) setPreScore(`${pt.preTest.score}/${pt.preTest.total}`)
       if (pt.postTest) setPostScore(`${pt.postTest.score}/${pt.postTest.total}`)
@@ -58,14 +59,14 @@ export function QuizGate({ children }: QuizGateProps) {
 
   function handleRegistered(p: string, n: string) {
     setPhone(p)
-    setNama(n)
+    setName(n)
     setStep('preTest')
   }
 
   function switchAccount() {
     localStorage.removeItem('quiz_phone')
     setPhone('')
-    setNama('')
+    setName('')
     setPreScore(null)
     setPostScore(null)
     setStep('register')
@@ -96,7 +97,7 @@ export function QuizGate({ children }: QuizGateProps) {
   const userBadge = step !== 'register' && (
     <div className="mb-4 flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3">
       <div className="text-sm">
-        <p className="font-semibold">{nama}</p>
+        <p className="font-semibold">{name}</p>
         <p className="text-muted-foreground text-xs">{phone}</p>
       </div>
       <button
@@ -110,7 +111,9 @@ export function QuizGate({ children }: QuizGateProps) {
 
   return (
     <section className="py-8">
-      <h2 className="mb-4 text-xl font-bold">Kenali Metode MKJP</h2>
+      <h2 className="mb-4 text-xl font-bold">
+        {educationTitle || 'Materi Edukasi'}
+      </h2>
 
       {step === 'register' && <PhoneRegister onRegistered={handleRegistered} />}
 

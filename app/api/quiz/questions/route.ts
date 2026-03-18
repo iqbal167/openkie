@@ -10,6 +10,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Type tidak valid' }, { status: 400 })
 
   const quiz = await getQuizData()
-  const questions = quiz[type].map(({ jawabanBenar: _, ...rest }) => rest)
+  const questions = quiz[type].map(({ correctAnswer: _, ...rest }) => rest)
   return NextResponse.json(questions)
 }

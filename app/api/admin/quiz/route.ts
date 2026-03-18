@@ -29,7 +29,7 @@ export const POST = auth(async (req) => {
     return NextResponse.json({ error: 'Type tidak valid' }, { status: 400 })
   if (!question?.soal || !question?.pilihan?.length)
     return NextResponse.json(
-      { error: 'Data soal tidak lengkap' },
+      { error: 'Question data incomplete' },
       { status: 400 }
     )
 

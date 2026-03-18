@@ -8,7 +8,7 @@ import type { Question } from '@/lib/types'
 
 type QuizType = 'preTest' | 'postTest'
 
-const emptyForm = { soal: '', pilihan: ['', '', '', ''], jawabanBenar: 0 }
+const emptyForm = { question: '', options: ['', '', '', ''], correctAnswer: 0 }
 
 export default function QuizPage() {
   const [type, setType] = useState<QuizType>('preTest')
@@ -32,7 +32,7 @@ export default function QuizPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!form.soal || form.pilihan.some((p) => !p)) {
+    if (!form.question || form.options.some((p) => !p)) {
       setStatus('Soal dan semua pilihan wajib diisi.')
       return
     }
@@ -73,9 +73,9 @@ export default function QuizPage() {
   function startEdit(index: number) {
     const q = items[index]
     setForm({
-      soal: q.soal,
-      pilihan: [...q.pilihan],
-      jawabanBenar: q.jawabanBenar,
+      question: q.question,
+      options: [...q.options],
+      correctAnswer: q.correctAnswer,
     })
     setEditIndex(index)
     setStatus('')
@@ -112,18 +112,18 @@ export default function QuizPage() {
       <form onSubmit={handleSubmit} className="mb-6 flex flex-col gap-3">
         <textarea
           placeholder="Soal"
-          value={form.soal}
-          onChange={(e) => setForm((f) => ({ ...f, soal: e.target.value }))}
+          value={form.question}
+          onChange={(e) => setForm((f) => ({ ...f, question: e.target.value }))}
           rows={2}
           className="rounded-md border px-3 py-2 text-sm"
         />
-        {form.pilihan.map((p, i) => (
+        {form.options.map((p, i) => (
           <div key={i} className="flex items-center gap-2">
             <input
               type="radio"
               name="jawaban"
-              checked={form.jawabanBenar === i}
-              onChange={() => setForm((f) => ({ ...f, jawabanBenar: i }))}
+              checked={form.correctAnswer === i}
+              onChange={() => setForm((f) => ({ ...f, correctAnswer: i }))}
               className="accent-primary"
             />
             <input
@@ -131,7 +131,7 @@ export default function QuizPage() {
               value={p}
               onChange={(e) =>
                 setForm((f) => {
-                  const pilihan = [...f.pilihan]
+                  const pilihan = [...f.options]
                   pilihan[i] = e.target.value
                   return { ...f, pilihan }
                 })
@@ -186,12 +186,12 @@ export default function QuizPage() {
             >
               <div className="flex-1 text-sm">
                 <p className="font-medium">
-                  {i + 1}. {q.soal}
+                  {i + 1}. {q.question}
                 </p>
                 <div className="text-muted-foreground mt-1 space-y-0.5">
-                  {q.pilihan?.map((p, pi) => (
+                  {q.options?.map((p, pi) => (
                     <p key={pi}>
-                      {pi === q.jawabanBenar ? '✅' : '○'} {p}
+                      {pi === q.correctAnswer ? '✅' : '○'} {p}
                     </p>
                   ))}
                 </div>

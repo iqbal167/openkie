@@ -72,7 +72,7 @@ export default function VideosPage() {
 
   return (
     <div>
-      <h2 className="mb-4 text-lg font-bold">Kelola Video Testimoni</h2>
+      <h2 className="mb-4 text-lg font-bold">Kelola Video Sorotan</h2>
 
       <form onSubmit={handleSubmit} className="mb-6 flex flex-col gap-3">
         <input

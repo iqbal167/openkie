@@ -4,11 +4,11 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { ConfirmDelete } from '@/components/confirm-delete'
 import { SkeletonList } from '@/components/skeleton'
-import type { MediaEdukasi } from '@/lib/types'
+import type { EducationMedia } from '@/lib/types'
 import { extractYouTubeId } from '@/lib/utils'
 
-export default function MediaEdukasiPage() {
-  const [items, setItems] = useState<MediaEdukasi[]>([])
+export default function EducationMediaPage() {
+  const [items, setItems] = useState<EducationMedia[]>([])
   const [title, setTitle] = useState('')
   const [videoUrl, setVideoUrl] = useState('')
   const [status, setStatus] = useState('')
