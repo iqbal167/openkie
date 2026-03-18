@@ -13,7 +13,7 @@ import type {
 const BLOB_KEY = 'settings.json'
 const QUIZ_BLOB_KEY = 'quiz.json'
 const PARTICIPANTS_BLOB_KEY = 'participants.json'
-const MEDIA_BLOB_KEY = 'media-edukasi.json'
+const MEDIA_BLOB_KEY = 'education-media.json'
 const HIGHLIGHT_BLOB_KEY = 'highlight.json'
 const ADMIN_BLOB_KEY = 'admin.json'
 
@@ -52,11 +52,10 @@ async function writeBlob<T>(key: string, data: T): Promise<void> {
 // --- Settings ---
 
 const defaultSettings: SiteSettings = {
-  siteName: 'KIE MKJP Kelurahan Karang Timur',
-  siteDescription:
-    'Informasi lengkap Metode Kontrasepsi Jangka Panjang (MKJP) untuk warga Kelurahan Karang Timur, Kota Tangerang.',
-  whatsappNumber: '6281234567890',
-  whatsappMessageTemplate: 'Halo Kader KB, saya ingin konsultasi tentang MKJP.',
+  siteName: 'OpenKIE',
+  siteDescription: 'Platform edukasi digital',
+  whatsappNumber: '',
+  whatsappMessageTemplate: 'Halo, saya ingin bertanya.',
   educationMaterials: [],
 }
 
