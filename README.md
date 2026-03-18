@@ -39,7 +39,7 @@ Cara paling mudah — klik tombol di bawah:
    ![Vercel Login](docs/deploy-01-login.png)
 
 3. Vercel akan otomatis clone repo ke akun kamu
-4. Isi `AUTH_SECRET` — klik link **generate-secret.vercel.app** yang tersedia, copy hasilnya, paste
+4. Isi `AUTH_SECRET` — klik link [generate-secret.vercel.app](https://generate-secret.vercel.app/32) yang tersedia, copy hasilnya, paste
 
    ![Set Environment Variable](docs/deploy-02-env.png)
 
