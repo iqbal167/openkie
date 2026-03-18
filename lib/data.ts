@@ -1,8 +1,10 @@
 import { head, put } from '@vercel/blob'
 
-import type { SiteSettings } from '@/lib/types'
+import type { Participant, QuizData, SiteSettings } from '@/lib/types'
 
 const BLOB_KEY = 'settings.json'
+const QUIZ_BLOB_KEY = 'quiz.json'
+const PARTICIPANTS_BLOB_KEY = 'participants.json'
 
 const defaultSettings: SiteSettings = {
   siteName: 'KIE MKJP Kelurahan Karang Timur',
@@ -31,4 +33,55 @@ export async function saveSettings(settings: SiteSettings): Promise<void> {
     allowOverwrite: true,
     contentType: 'application/json',
   })
+}
+
+// --- Quiz Data ---
+
+const defaultQuizData: QuizData = { preTest: [], postTest: [] }
+
+export async function getQuizData(): Promise<QuizData> {
+  try {
+    const meta = await head(QUIZ_BLOB_KEY)
+    const res = await fetch(meta.url, { cache: 'no-store' })
+    return (await res.json()) as QuizData
+  } catch {
+    return defaultQuizData
+  }
+}
+
+export async function saveQuizData(data: QuizData): Promise<void> {
+  await put(QUIZ_BLOB_KEY, JSON.stringify(data, null, 2), {
+    access: 'public',
+    addRandomSuffix: false,
+    allowOverwrite: true,
+    contentType: 'application/json',
+  })
+}
+
+// --- Participants ---
+
+export async function getParticipants(): Promise<Participant[]> {
+  try {
+    const meta = await head(PARTICIPANTS_BLOB_KEY)
+    const res = await fetch(meta.url, { cache: 'no-store' })
+    return (await res.json()) as Participant[]
+  } catch {
+    return []
+  }
+}
+
+export async function saveParticipants(data: Participant[]): Promise<void> {
+  await put(PARTICIPANTS_BLOB_KEY, JSON.stringify(data, null, 2), {
+    access: 'public',
+    addRandomSuffix: false,
+    allowOverwrite: true,
+    contentType: 'application/json',
+  })
+}
+
+export async function getParticipantByPhone(
+  phone: string
+): Promise<Participant | undefined> {
+  const participants = await getParticipants()
+  return participants.find((p) => p.phone === phone)
 }

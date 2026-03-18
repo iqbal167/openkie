@@ -20,3 +20,29 @@ export interface SiteSettings {
   videoTestimonials: VideoTestimonial[]
   metodeMKJP: MetodeMKJP[]
 }
+
+export interface Question {
+  id: string
+  soal: string
+  pilihan: string[]
+  jawabanBenar: number
+}
+
+export interface QuizData {
+  preTest: Question[]
+  postTest: Question[]
+}
+
+export interface QuizResult {
+  score: number
+  total: number
+  completedAt: string
+}
+
+export interface Participant {
+  phone: string
+  nama: string
+  preTest?: QuizResult
+  postTest?: QuizResult
+  registeredAt: string
+}

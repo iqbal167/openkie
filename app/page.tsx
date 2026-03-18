@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 import { EdukasiSection } from '@/components/edukasi-section'
 import { Footer } from '@/components/footer'
 import { HeroSection } from '@/components/hero-section'
+import { QuizGate } from '@/components/quiz-gate'
 import { VideoSection } from '@/components/video-section'
 import { WhatsAppCTA, WhatsAppInlineCTA } from '@/components/whatsapp-cta'
 import { getSettings } from '@/lib/data'
@@ -25,7 +26,9 @@ export default async function Home() {
           siteDescription={settings.siteDescription}
         />
         <VideoSection videoTestimonials={settings.videoTestimonials} />
-        <EdukasiSection metodeMKJP={settings.metodeMKJP} />
+        <QuizGate>
+          <EdukasiSection metodeMKJP={settings.metodeMKJP} />
+        </QuizGate>
       </main>
       <Suspense>
         <WhatsAppInlineCTA {...waProps} />

@@ -8,6 +8,8 @@ const navLinks = [
   { href: '/admin/settings', label: 'Settings' },
   { href: '/admin/videos', label: 'Video' },
   { href: '/admin/edukasi', label: 'Edukasi' },
+  { href: '/admin/quiz', label: 'Quiz' },
+  { href: '/admin/participants', label: 'Peserta' },
 ]
 
 export default function AdminLayout({
