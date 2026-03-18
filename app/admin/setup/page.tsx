@@ -29,7 +29,7 @@ export default function SetupPage() {
       body: JSON.stringify({ username, password }),
     })
     if (res.ok) {
-      router.push('/admin')
+      router.push('/admin/login')
     } else {
       const data = await res.json()
       setError(data.error || 'Gagal membuat akun.')

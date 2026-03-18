@@ -40,7 +40,7 @@ function LoginForm() {
       <input
         name="username"
         type="text"
-        placeholder="Nomor WhatsApp"
+        placeholder="Username"
         required
         className="rounded-md border px-4 py-2"
       />
