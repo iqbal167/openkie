@@ -7,6 +7,7 @@ interface SettingsForm {
   siteDescription: string
   whatsappNumber: string
   whatsappMessageTemplate: string
+  quizEnabled: boolean
 }
 
 export default function SettingsPage() {
@@ -15,6 +16,7 @@ export default function SettingsPage() {
     siteDescription: '',
     whatsappNumber: '',
     whatsappMessageTemplate: '',
+    quizEnabled: false,
   })
   const [status, setStatus] = useState<'idle' | 'saving' | 'success' | 'error'>(
     'idle'
@@ -48,7 +50,7 @@ export default function SettingsPage() {
   }
 
   const fields: {
-    key: keyof SettingsForm
+    key: Exclude<keyof SettingsForm, 'quizEnabled'>
     label: string
     textarea?: boolean
   }[] = [
@@ -85,6 +87,22 @@ export default function SettingsPage() {
             )}
           </label>
         ))}
+        <label className="flex items-center justify-between rounded-md border px-4 py-3">
+          <div>
+            <span className="text-sm font-medium">Pre-Test & Post-Test</span>
+            <p className="text-muted-foreground text-xs">
+              Aktifkan quiz sebelum dan sesudah materi edukasi
+            </p>
+          </div>
+          <input
+            type="checkbox"
+            checked={form.quizEnabled}
+            onChange={(e) =>
+              setForm((f) => ({ ...f, quizEnabled: e.target.checked }))
+            }
+            className="accent-primary h-5 w-5"
+          />
+        </label>
         <button
           type="submit"
           disabled={status === 'saving'}

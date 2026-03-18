@@ -19,6 +19,7 @@ export interface SiteSettings {
   whatsappMessageTemplate: string
   videoTestimonials: VideoTestimonial[]
   metodeMKJP: MetodeMKJP[]
+  quizEnabled?: boolean
 }
 
 export interface Question {

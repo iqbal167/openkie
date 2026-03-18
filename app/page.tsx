@@ -26,9 +26,13 @@ export default async function Home() {
           siteDescription={settings.siteDescription}
         />
         <VideoSection videoTestimonials={settings.videoTestimonials} />
-        <QuizGate>
+        {settings.quizEnabled ? (
+          <QuizGate>
+            <EdukasiSection metodeMKJP={settings.metodeMKJP} />
+          </QuizGate>
+        ) : (
           <EdukasiSection metodeMKJP={settings.metodeMKJP} />
-        </QuizGate>
+        )}
       </main>
       <Suspense>
         <WhatsAppInlineCTA {...waProps} />
