@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { PhoneRegister } from '@/components/phone-register'
 import { QuizForm } from '@/components/quiz-form'
+import { Skeleton } from '@/components/skeleton'
 import type { Participant } from '@/lib/types'
 
 type Step = 'register' | 'preTest' | 'edukasi' | 'postTest' | 'done'
@@ -80,7 +81,17 @@ export function QuizGate({ children }: QuizGateProps) {
     setStep('done')
   }
 
-  if (loading) return null
+  if (loading)
+    return (
+      <section className="py-8">
+        <Skeleton className="mb-4 h-7 w-48" />
+        <div className="space-y-3">
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-full" />
+          <Skeleton className="h-10 w-2/3" />
+        </div>
+      </section>
+    )
 
   const userBadge = step !== 'register' && (
     <div className="mb-4 flex items-center justify-between rounded-lg bg-gray-50 px-4 py-3">

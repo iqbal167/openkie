@@ -1,10 +1,47 @@
-import { head, put } from '@vercel/blob'
+import { list, put } from '@vercel/blob'
+import { unstable_noStore as noStore } from 'next/cache'
 
-import type { Participant, QuizData, SiteSettings } from '@/lib/types'
+import type {
+  MediaEdukasi,
+  Participant,
+  QuizData,
+  SiteSettings,
+} from '@/lib/types'
 
 const BLOB_KEY = 'settings.json'
 const QUIZ_BLOB_KEY = 'quiz.json'
 const PARTICIPANTS_BLOB_KEY = 'participants.json'
+const MEDIA_BLOB_KEY = 'media-edukasi.json'
+
+// In-memory write-through cache to avoid CDN staleness
+const cache = new Map<string, unknown>()
+
+async function readBlob<T>(key: string, fallback: T): Promise<T> {
+  noStore()
+  if (cache.has(key)) return cache.get(key) as T
+  try {
+    const { blobs } = await list({ prefix: key, limit: 1 })
+    if (!blobs.length) return fallback
+    const res = await fetch(blobs[0].downloadUrl, { cache: 'no-store' })
+    const data = (await res.json()) as T
+    cache.set(key, data)
+    return data
+  } catch {
+    return fallback
+  }
+}
+
+async function writeBlob<T>(key: string, data: T): Promise<void> {
+  await put(key, JSON.stringify(data, null, 2), {
+    access: 'public',
+    addRandomSuffix: false,
+    allowOverwrite: true,
+    contentType: 'application/json',
+  })
+  cache.set(key, data)
+}
+
+// --- Settings ---
 
 const defaultSettings: SiteSettings = {
   siteName: 'KIE MKJP Kelurahan Karang Timur',
@@ -16,68 +53,22 @@ const defaultSettings: SiteSettings = {
   metodeMKJP: [],
 }
 
-export async function getSettings(): Promise<SiteSettings> {
-  try {
-    const meta = await head(BLOB_KEY)
-    const res = await fetch(meta.url, { cache: 'no-store' })
-    return (await res.json()) as SiteSettings
-  } catch {
-    return defaultSettings
-  }
-}
-
-export async function saveSettings(settings: SiteSettings): Promise<void> {
-  await put(BLOB_KEY, JSON.stringify(settings, null, 2), {
-    access: 'public',
-    addRandomSuffix: false,
-    allowOverwrite: true,
-    contentType: 'application/json',
-  })
-}
+export const getSettings = () => readBlob(BLOB_KEY, defaultSettings)
+export const saveSettings = (s: SiteSettings) => writeBlob(BLOB_KEY, s)
 
 // --- Quiz Data ---
 
 const defaultQuizData: QuizData = { preTest: [], postTest: [] }
 
-export async function getQuizData(): Promise<QuizData> {
-  try {
-    const meta = await head(QUIZ_BLOB_KEY)
-    const res = await fetch(meta.url, { cache: 'no-store' })
-    return (await res.json()) as QuizData
-  } catch {
-    return defaultQuizData
-  }
-}
-
-export async function saveQuizData(data: QuizData): Promise<void> {
-  await put(QUIZ_BLOB_KEY, JSON.stringify(data, null, 2), {
-    access: 'public',
-    addRandomSuffix: false,
-    allowOverwrite: true,
-    contentType: 'application/json',
-  })
-}
+export const getQuizData = () => readBlob(QUIZ_BLOB_KEY, defaultQuizData)
+export const saveQuizData = (d: QuizData) => writeBlob(QUIZ_BLOB_KEY, d)
 
 // --- Participants ---
 
-export async function getParticipants(): Promise<Participant[]> {
-  try {
-    const meta = await head(PARTICIPANTS_BLOB_KEY)
-    const res = await fetch(meta.url, { cache: 'no-store' })
-    return (await res.json()) as Participant[]
-  } catch {
-    return []
-  }
-}
-
-export async function saveParticipants(data: Participant[]): Promise<void> {
-  await put(PARTICIPANTS_BLOB_KEY, JSON.stringify(data, null, 2), {
-    access: 'public',
-    addRandomSuffix: false,
-    allowOverwrite: true,
-    contentType: 'application/json',
-  })
-}
+export const getParticipants = () =>
+  readBlob<Participant[]>(PARTICIPANTS_BLOB_KEY, [])
+export const saveParticipants = (d: Participant[]) =>
+  writeBlob(PARTICIPANTS_BLOB_KEY, d)
 
 export async function getParticipantByPhone(
   phone: string
@@ -86,27 +77,9 @@ export async function getParticipantByPhone(
   return participants.find((p) => p.phone === phone)
 }
 
-// --- Media Edukasi (admin only) ---
+// --- Media Edukasi ---
 
-export async function getMediaEdukasi(): Promise<
-  import('@/lib/types').MediaEdukasi[]
-> {
-  try {
-    const meta = await head('media-edukasi.json')
-    const res = await fetch(meta.url, { cache: 'no-store' })
-    return (await res.json()) as import('@/lib/types').MediaEdukasi[]
-  } catch {
-    return []
-  }
-}
-
-export async function saveMediaEdukasi(
-  data: import('@/lib/types').MediaEdukasi[]
-): Promise<void> {
-  await put('media-edukasi.json', JSON.stringify(data, null, 2), {
-    access: 'public',
-    addRandomSuffix: false,
-    allowOverwrite: true,
-    contentType: 'application/json',
-  })
-}
+export const getMediaEdukasi = () =>
+  readBlob<MediaEdukasi[]>(MEDIA_BLOB_KEY, [])
+export const saveMediaEdukasi = (d: MediaEdukasi[]) =>
+  writeBlob(MEDIA_BLOB_KEY, d)

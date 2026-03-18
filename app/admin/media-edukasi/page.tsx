@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from 'react'
 
+import { ConfirmDelete } from '@/components/confirm-delete'
+import { SkeletonList } from '@/components/skeleton'
 import type { MediaEdukasi } from '@/lib/types'
 import { extractYouTubeId } from '@/lib/utils'
 
@@ -10,10 +12,13 @@ export default function MediaEdukasiPage() {
   const [title, setTitle] = useState('')
   const [videoUrl, setVideoUrl] = useState('')
   const [status, setStatus] = useState('')
+  const [loading, setLoading] = useState(true)
 
   const load = useCallback(async () => {
-    const res = await fetch('/api/admin/media-edukasi')
+    setLoading(true)
+    const res = await fetch(`/api/admin/media-edukasi?t=${Date.now()}`)
     setItems(await res.json())
+    setLoading(false)
   }, [])
 
   useEffect(() => {
@@ -89,31 +94,40 @@ export default function MediaEdukasiPage() {
         )}
       </form>
 
-      <div className="flex flex-col gap-4">
-        {items.map((item, i) => (
-          <div key={i} className="rounded-lg border p-3">
-            <div className="mb-2 flex items-center justify-between">
-              <p className="text-sm font-medium">{item.title}</p>
-              <button
-                onClick={() => handleDelete(i)}
-                className="text-sm text-red-600 hover:underline"
-              >
-                Hapus
-              </button>
+      {loading ? (
+        <SkeletonList />
+      ) : items.length === 0 ? (
+        <p className="text-muted-foreground text-sm">Belum ada data.</p>
+      ) : (
+        <div className="flex flex-col gap-4">
+          {items.map((item, i) => (
+            <div key={i} className="rounded-lg border p-3">
+              <div className="mb-2 flex items-center justify-between">
+                <p className="text-sm font-medium">{item.title}</p>
+                <ConfirmDelete
+                  onConfirm={async () => {
+                    await handleDelete(i)
+                  }}
+                >
+                  <button className="text-sm text-red-600 hover:underline">
+                    Hapus
+                  </button>
+                </ConfirmDelete>
+              </div>
+              <div className="relative aspect-video overflow-hidden rounded-lg">
+                <iframe
+                  src={`https://www.youtube.com/embed/${extractYouTubeId(item.videoUrl)}`}
+                  title={item.title}
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 h-full w-full"
+                />
+              </div>
             </div>
-            <div className="relative aspect-video overflow-hidden rounded-lg">
-              <iframe
-                src={`https://www.youtube.com/embed/${extractYouTubeId(item.videoUrl)}`}
-                title={item.title}
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="absolute inset-0 h-full w-full"
-              />
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

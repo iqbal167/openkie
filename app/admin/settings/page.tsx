@@ -23,7 +23,7 @@ export default function SettingsPage() {
   )
 
   const loadSettings = useCallback(async () => {
-    const res = await fetch('/api/admin/settings')
+    const res = await fetch(`/api/admin/settings?t=${Date.now()}`)
     const data = await res.json()
     setForm({ ...data, quizEnabled: data.quizEnabled ?? false })
   }, [])

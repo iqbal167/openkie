@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 import { NextResponse } from 'next/server'
 
 import { getParticipants, saveParticipants } from '@/lib/data'

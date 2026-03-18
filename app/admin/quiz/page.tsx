@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from 'react'
 
+import { ConfirmDelete } from '@/components/confirm-delete'
+import { SkeletonList } from '@/components/skeleton'
 import type { Question } from '@/lib/types'
 
 type QuizType = 'preTest' | 'postTest'
@@ -14,10 +16,13 @@ export default function QuizPage() {
   const [form, setForm] = useState({ ...emptyForm })
   const [editIndex, setEditIndex] = useState<number | null>(null)
   const [status, setStatus] = useState('')
+  const [loading, setLoading] = useState(true)
 
   const load = useCallback(async () => {
-    const res = await fetch(`/api/admin/quiz?type=${type}`)
+    setLoading(true)
+    const res = await fetch(`/api/admin/quiz?type=${type}&t=${Date.now()}`)
     setItems(await res.json())
+    setLoading(false)
   }, [type])
 
   useEffect(() => {
@@ -168,41 +173,50 @@ export default function QuizPage() {
       <h3 className="mb-2 text-sm font-semibold">
         Daftar Soal {label} ({items.length})
       </h3>
-      <div className="flex flex-col gap-2">
-        {items.map((q, i) => (
-          <div
-            key={q.id}
-            className="flex items-start justify-between rounded-md border p-3"
-          >
-            <div className="flex-1 text-sm">
-              <p className="font-medium">
-                {i + 1}. {q.soal}
-              </p>
-              <div className="text-muted-foreground mt-1 space-y-0.5">
-                {q.pilihan.map((p, pi) => (
-                  <p key={pi}>
-                    {pi === q.jawabanBenar ? '✅' : '○'} {p}
-                  </p>
-                ))}
+      {loading ? (
+        <SkeletonList />
+      ) : items.length === 0 ? (
+        <p className="text-muted-foreground text-sm">Belum ada data.</p>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {items.map((q, i) => (
+            <div
+              key={q.id}
+              className="flex items-start justify-between rounded-md border p-3"
+            >
+              <div className="flex-1 text-sm">
+                <p className="font-medium">
+                  {i + 1}. {q.soal}
+                </p>
+                <div className="text-muted-foreground mt-1 space-y-0.5">
+                  {q.pilihan?.map((p, pi) => (
+                    <p key={pi}>
+                      {pi === q.jawabanBenar ? '✅' : '○'} {p}
+                    </p>
+                  ))}
+                </div>
+              </div>
+              <div className="ml-2 flex gap-2">
+                <button
+                  onClick={() => startEdit(i)}
+                  className="text-sm text-blue-600 hover:underline"
+                >
+                  Edit
+                </button>
+                <ConfirmDelete
+                  onConfirm={async () => {
+                    await handleDelete(i)
+                  }}
+                >
+                  <button className="text-sm text-red-600 hover:underline">
+                    Hapus
+                  </button>
+                </ConfirmDelete>
               </div>
             </div>
-            <div className="ml-2 flex gap-2">
-              <button
-                onClick={() => startEdit(i)}
-                className="text-sm text-blue-600 hover:underline"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(i)}
-                className="text-sm text-red-600 hover:underline"
-              >
-                Hapus
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

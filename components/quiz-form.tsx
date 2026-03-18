@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from 'react'
 
+import { Skeleton } from '@/components/skeleton'
+
 interface QuizQuestion {
   id: string
   soal: string
@@ -63,7 +65,16 @@ export function QuizForm({ type, phone, onComplete }: QuizFormProps) {
 
   if (loading)
     return (
-      <p className="py-8 text-center text-sm text-gray-500">Memuat soal...</p>
+      <div className="flex flex-col gap-6 py-4">
+        <Skeleton className="h-6 w-32" />
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="space-y-2">
+            <Skeleton className="h-4 w-3/4" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+        ))}
+      </div>
     )
 
   if (questions.length === 0)

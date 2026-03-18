@@ -2,14 +2,17 @@
 
 import { useCallback, useEffect, useState } from 'react'
 
+import { ConfirmDelete } from '@/components/confirm-delete'
+import { SkeletonList } from '@/components/skeleton'
 import type { Participant } from '@/lib/types'
 
 export default function ParticipantsPage() {
   const [items, setItems] = useState<Participant[]>([])
   const [loading, setLoading] = useState(true)
+  const [status, setStatus] = useState('')
 
   const load = useCallback(async () => {
-    const res = await fetch('/api/admin/participants')
+    const res = await fetch(`/api/admin/participants?t=${Date.now()}`)
     setItems(await res.json())
     setLoading(false)
   }, [])
@@ -19,12 +22,29 @@ export default function ParticipantsPage() {
     void load()
   }, [load])
 
-  if (loading)
-    return <p className="text-muted-foreground text-sm">Memuat data...</p>
+  async function handleClear() {
+    const res = await fetch('/api/admin/participants', { method: 'DELETE' })
+    if (res.ok) {
+      setStatus('Data peserta dihapus!')
+      await load()
+    }
+  }
+
+  if (loading) return <SkeletonList count={5} />
 
   return (
     <div>
-      <h2 className="mb-4 text-lg font-bold">Data Peserta ({items.length})</h2>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-lg font-bold">Data Peserta ({items.length})</h2>
+        {items.length > 0 && (
+          <ConfirmDelete onConfirm={handleClear}>
+            <button className="rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold text-white">
+              Hapus Semua
+            </button>
+          </ConfirmDelete>
+        )}
+      </div>
+      {status && <p className="mb-3 text-sm text-green-600">{status}</p>}
 
       {items.length === 0 ? (
         <p className="text-muted-foreground text-sm">Belum ada peserta.</p>

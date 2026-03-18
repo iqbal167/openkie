@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from 'react'
 
+import { ConfirmDelete } from '@/components/confirm-delete'
+import { SkeletonList } from '@/components/skeleton'
 import type { MetodeMKJP } from '@/lib/types'
 
 const emptyForm: MetodeMKJP = {
@@ -15,10 +17,13 @@ export default function EdukasiPage() {
   const [form, setForm] = useState<MetodeMKJP>({ ...emptyForm })
   const [editIndex, setEditIndex] = useState<number | null>(null)
   const [status, setStatus] = useState('')
+  const [loading, setLoading] = useState(true)
 
   const load = useCallback(async () => {
-    const res = await fetch('/api/admin/edukasi')
+    setLoading(true)
+    const res = await fetch(`/api/admin/edukasi?t=${Date.now()}`)
     setItems(await res.json())
+    setLoading(false)
   }, [])
 
   useEffect(() => {
@@ -40,7 +45,7 @@ export default function EdukasiPage() {
     if (res.ok) {
       setForm({ ...emptyForm })
       setEditIndex(null)
-      setStatus(isEdit ? 'Metode diperbarui!' : 'Metode ditambahkan!')
+      setStatus(isEdit ? 'Materi diperbarui!' : 'Materi ditambahkan!')
       await load()
     } else {
       setStatus('Gagal menyimpan.')
@@ -54,7 +59,7 @@ export default function EdukasiPage() {
       body: JSON.stringify({ index }),
     })
     if (res.ok) {
-      setStatus('Metode dihapus!')
+      setStatus('Materi dihapus!')
       await load()
     }
   }
@@ -117,35 +122,44 @@ export default function EdukasiPage() {
         {status && <p className="text-sm text-green-600">{status}</p>}
       </form>
 
-      <div className="flex flex-col gap-3">
-        {items.map((item, i) => (
-          <div
-            key={i}
-            className="flex items-center justify-between rounded-md border p-3"
-          >
-            <div className="text-sm">
-              <p className="font-medium">{item.nama}</p>
-              <p className="text-muted-foreground line-clamp-1">
-                {item.deskripsi}
-              </p>
+      {loading ? (
+        <SkeletonList />
+      ) : items.length === 0 ? (
+        <p className="text-muted-foreground text-sm">Belum ada data.</p>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {items.map((item, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between rounded-md border p-3"
+            >
+              <div className="text-sm">
+                <p className="font-medium">{item.nama}</p>
+                <p className="text-muted-foreground line-clamp-1">
+                  {item.deskripsi}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => startEdit(i)}
+                  className="text-sm text-blue-600 hover:underline"
+                >
+                  Edit
+                </button>
+                <ConfirmDelete
+                  onConfirm={async () => {
+                    await handleDelete(i)
+                  }}
+                >
+                  <button className="text-sm text-red-600 hover:underline">
+                    Hapus
+                  </button>
+                </ConfirmDelete>
+              </div>
             </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => startEdit(i)}
-                className="text-sm text-blue-600 hover:underline"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(i)}
-                className="text-sm text-red-600 hover:underline"
-              >
-                Hapus
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

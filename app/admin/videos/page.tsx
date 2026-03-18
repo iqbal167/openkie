@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useState } from 'react'
 
+import { ConfirmDelete } from '@/components/confirm-delete'
+import { SkeletonList } from '@/components/skeleton'
 import type { VideoTestimonial } from '@/lib/types'
 
 export default function VideosPage() {
@@ -9,11 +11,14 @@ export default function VideosPage() {
   const [form, setForm] = useState({ id: '', title: '' })
   const [editIndex, setEditIndex] = useState<number | null>(null)
   const [status, setStatus] = useState('')
+  const [loading, setLoading] = useState(true)
 
   const load = useCallback(async () => {
-    const res = await fetch('/api/admin/videos')
+    setLoading(true)
+    const res = await fetch(`/api/admin/videos?t=${Date.now()}`)
     const data = await res.json()
     setVideos(data)
+    setLoading(false)
   }, [])
 
   useEffect(() => {
@@ -102,33 +107,42 @@ export default function VideosPage() {
         {status && <p className="text-sm text-green-600">{status}</p>}
       </form>
 
-      <div className="flex flex-col gap-3">
-        {videos.map((v, i) => (
-          <div
-            key={i}
-            className="flex items-center justify-between rounded-md border p-3"
-          >
-            <div className="text-sm">
-              <p className="font-medium">{v.title}</p>
-              <p className="text-muted-foreground">{v.id}</p>
+      {loading ? (
+        <SkeletonList />
+      ) : videos.length === 0 ? (
+        <p className="text-muted-foreground text-sm">Belum ada data.</p>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {videos.map((v, i) => (
+            <div
+              key={i}
+              className="flex items-center justify-between rounded-md border p-3"
+            >
+              <div className="text-sm">
+                <p className="font-medium">{v.title}</p>
+                <p className="text-muted-foreground">{v.id}</p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => startEdit(i)}
+                  className="text-sm text-blue-600 hover:underline"
+                >
+                  Edit
+                </button>
+                <ConfirmDelete
+                  onConfirm={async () => {
+                    await handleDelete(i)
+                  }}
+                >
+                  <button className="text-sm text-red-600 hover:underline">
+                    Hapus
+                  </button>
+                </ConfirmDelete>
+              </div>
             </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => startEdit(i)}
-                className="text-sm text-blue-600 hover:underline"
-              >
-                Edit
-              </button>
-              <button
-                onClick={() => handleDelete(i)}
-                className="text-sm text-red-600 hover:underline"
-              >
-                Hapus
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
