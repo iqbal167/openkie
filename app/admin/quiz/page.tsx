@@ -17,6 +17,7 @@ export default function QuizPage() {
   const [editIndex, setEditIndex] = useState<number | null>(null)
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -38,6 +39,7 @@ export default function QuizPage() {
     }
 
     const isEdit = editIndex !== null
+    setSaving(true)
     const res = await fetch('/api/admin/quiz', {
       method: isEdit ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -57,6 +59,7 @@ export default function QuizPage() {
     } else {
       setStatus('Gagal menyimpan.')
     }
+    setSaving(false)
   }
 
   async function handleDelete(index: number) {
@@ -149,9 +152,12 @@ export default function QuizPage() {
         <div className="flex gap-2">
           <button
             type="submit"
-            className="bg-primary text-primary-foreground rounded-md px-4 py-2 text-sm font-semibold"
+            disabled={saving}
+            className="bg-primary text-primary-foreground rounded-md px-4 py-2 text-sm font-semibold disabled:opacity-50"
           >
-            {editIndex !== null ? 'Update' : 'Tambah'} Soal {label}
+            {saving
+              ? 'Menyimpan...'
+              : `${editIndex !== null ? 'Update' : 'Tambah'} Soal ${label}`}
           </button>
           {editIndex !== null && (
             <button

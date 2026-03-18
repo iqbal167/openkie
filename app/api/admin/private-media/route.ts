@@ -26,6 +26,23 @@ export const POST = auth(async (req) => {
   return NextResponse.json(items)
 })
 
+export const PUT = auth(async (req) => {
+  if (!req.auth)
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const { index, title, videoUrl } = await req.json()
+  const items = await getEducationMedia()
+  if (index < 0 || index >= items.length)
+    return NextResponse.json({ error: 'Index tidak valid' }, { status: 400 })
+  if (!title || !videoUrl)
+    return NextResponse.json(
+      { error: 'Title dan URL wajib diisi' },
+      { status: 400 }
+    )
+  items[index] = { title, videoUrl }
+  await saveEducationMedia(items)
+  return NextResponse.json(items)
+})
+
 export const DELETE = auth(async (req) => {
   if (!req.auth)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

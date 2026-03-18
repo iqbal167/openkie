@@ -11,12 +11,14 @@ export default function EducationMediaPage() {
   const [items, setItems] = useState<EducationMedia[]>([])
   const [title, setTitle] = useState('')
   const [videoUrl, setVideoUrl] = useState('')
+  const [editIndex, setEditIndex] = useState<number | null>(null)
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
-    const res = await fetch(`/api/admin/media-edukasi?t=${Date.now()}`)
+    const res = await fetch(`/api/admin/private-media?t=${Date.now()}`)
     setItems(await res.json())
     setLoading(false)
   }, [])
@@ -32,23 +34,29 @@ export default function EducationMediaPage() {
       setStatus('Title dan URL wajib diisi.')
       return
     }
-    const res = await fetch('/api/admin/media-edukasi', {
-      method: 'POST',
+    const isEdit = editIndex !== null
+    setSaving(true)
+    const res = await fetch('/api/admin/private-media', {
+      method: isEdit ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, videoUrl }),
+      body: JSON.stringify(
+        isEdit ? { index: editIndex, title, videoUrl } : { title, videoUrl }
+      ),
     })
     if (res.ok) {
       setTitle('')
       setVideoUrl('')
-      setStatus('Video ditambahkan!')
+      setEditIndex(null)
+      setStatus(isEdit ? 'Video diperbarui!' : 'Video ditambahkan!')
       setItems(await res.json())
     } else {
       setStatus('Gagal menyimpan.')
     }
+    setSaving(false)
   }
 
   async function handleDelete(index: number) {
-    const res = await fetch('/api/admin/media-edukasi', {
+    const res = await fetch('/api/admin/private-media', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ index }),
@@ -57,6 +65,19 @@ export default function EducationMediaPage() {
       setItems(await res.json())
       setStatus('Video dihapus!')
     }
+  }
+
+  function startEdit(index: number) {
+    setEditIndex(index)
+    setTitle(items[index].title)
+    setVideoUrl(items[index].videoUrl)
+    setStatus('')
+  }
+
+  function cancelEdit() {
+    setEditIndex(null)
+    setTitle('')
+    setVideoUrl('')
   }
 
   return (
@@ -79,12 +100,28 @@ export default function EducationMediaPage() {
           onChange={(e) => setVideoUrl(e.target.value)}
           className="rounded-md border px-3 py-2 text-sm"
         />
-        <button
-          type="submit"
-          className="bg-primary text-primary-foreground rounded-md px-4 py-2 text-sm font-semibold"
-        >
-          Tambah Video
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="submit"
+            disabled={saving}
+            className="bg-primary text-primary-foreground rounded-md px-4 py-2 text-sm font-semibold disabled:opacity-50"
+          >
+            {saving
+              ? 'Menyimpan...'
+              : editIndex !== null
+                ? 'Update Video'
+                : 'Tambah Video'}
+          </button>
+          {editIndex !== null && (
+            <button
+              type="button"
+              onClick={cancelEdit}
+              className="rounded-md border px-4 py-2 text-sm"
+            >
+              Batal
+            </button>
+          )}
+        </div>
         {status && (
           <p
             className={`text-sm ${status.includes('Gagal') || status.includes('wajib') ? 'text-red-500' : 'text-green-600'}`}
@@ -104,15 +141,23 @@ export default function EducationMediaPage() {
             <div key={i} className="rounded-lg border p-3">
               <div className="mb-2 flex items-center justify-between">
                 <p className="text-sm font-medium">{item.title}</p>
-                <ConfirmDelete
-                  onConfirm={async () => {
-                    await handleDelete(i)
-                  }}
-                >
-                  <button className="text-sm text-red-600 hover:underline">
-                    Hapus
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => startEdit(i)}
+                    className="text-sm text-blue-600 hover:underline"
+                  >
+                    Edit
                   </button>
-                </ConfirmDelete>
+                  <ConfirmDelete
+                    onConfirm={async () => {
+                      await handleDelete(i)
+                    }}
+                  >
+                    <button className="text-sm text-red-600 hover:underline">
+                      Hapus
+                    </button>
+                  </ConfirmDelete>
+                </div>
               </div>
               <div className="relative aspect-video overflow-hidden rounded-lg">
                 <iframe

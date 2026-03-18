@@ -12,6 +12,7 @@ export default function VideosPage() {
   const [editIndex, setEditIndex] = useState<number | null>(null)
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -29,6 +30,7 @@ export default function VideosPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!form.id || !form.title) return
+    setSaving(true)
 
     const isEdit = editIndex !== null
     const res = await fetch('/api/admin/videos', {
@@ -45,6 +47,7 @@ export default function VideosPage() {
     } else {
       setStatus('Gagal menyimpan.')
     }
+    setSaving(false)
   }
 
   async function handleDelete(index: number) {
@@ -90,9 +93,10 @@ export default function VideosPage() {
         <div className="flex gap-2">
           <button
             type="submit"
-            className="bg-primary text-primary-foreground rounded-md px-4 py-2 text-sm font-semibold"
+            disabled={saving}
+            className="bg-primary text-primary-foreground rounded-md px-4 py-2 text-sm font-semibold disabled:opacity-50"
           >
-            {editIndex !== null ? 'Update' : 'Tambah'}
+            {saving ? 'Menyimpan...' : editIndex !== null ? 'Update' : 'Tambah'}
           </button>
           {editIndex !== null && (
             <button

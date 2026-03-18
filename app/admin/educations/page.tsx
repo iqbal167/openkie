@@ -18,10 +18,11 @@ export default function EdukasiPage() {
   const [editIndex, setEditIndex] = useState<number | null>(null)
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   const load = useCallback(async () => {
     setLoading(true)
-    const res = await fetch(`/api/admin/edukasi?t=${Date.now()}`)
+    const res = await fetch(`/api/admin/educations?t=${Date.now()}`)
     setItems(await res.json())
     setLoading(false)
   }, [])
@@ -34,9 +35,10 @@ export default function EdukasiPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!form.name || !form.description) return
+    setSaving(true)
 
     const isEdit = editIndex !== null
-    const res = await fetch('/api/admin/edukasi', {
+    const res = await fetch('/api/admin/educations', {
       method: isEdit ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(isEdit ? { ...form, index: editIndex } : form),
@@ -50,10 +52,11 @@ export default function EdukasiPage() {
     } else {
       setStatus('Gagal menyimpan.')
     }
+    setSaving(false)
   }
 
   async function handleDelete(index: number) {
-    const res = await fetch('/api/admin/edukasi', {
+    const res = await fetch('/api/admin/educations', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ index }),
@@ -105,9 +108,10 @@ export default function EdukasiPage() {
         <div className="flex gap-2">
           <button
             type="submit"
-            className="bg-primary text-primary-foreground rounded-md px-4 py-2 text-sm font-semibold"
+            disabled={saving}
+            className="bg-primary text-primary-foreground rounded-md px-4 py-2 text-sm font-semibold disabled:opacity-50"
           >
-            {editIndex !== null ? 'Update' : 'Tambah'}
+            {saving ? 'Menyimpan...' : editIndex !== null ? 'Update' : 'Tambah'}
           </button>
           {editIndex !== null && (
             <button
