@@ -29,7 +29,7 @@ Platform KIE (Komunikasi, Informasi, Edukasi) digital open-source yang bisa di-d
 
 Cara paling mudah — klik tombol di bawah:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/iqbal167/openkie&env=AUTH_SECRET&envDescription=Secret%20untuk%20enkripsi%20session.%20Generate%20di%20link%20berikut.&envLink=https://generate-secret.vercel.app/32&stores=[{"type":"blob"}])
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/iqbal167/openkie&env=AUTH_SECRET&envDescription=Secret%20untuk%20enkripsi%20session.%20Generate%20di%20link%20berikut.&envLink=https://secretkeygen.vercel.app/&stores=[{"type":"blob"}])
 
 ### Langkah-langkah:
 
@@ -39,7 +39,7 @@ Cara paling mudah — klik tombol di bawah:
    ![Vercel Login](docs/deploy-01-login.png)
 
 3. Vercel akan otomatis clone repo ke akun kamu
-4. Isi `AUTH_SECRET` — klik link [generate-secret.vercel.app](https://generate-secret.vercel.app/32) yang tersedia, copy hasilnya, paste
+4. Isi `AUTH_SECRET` — klik link [secretkeygen.vercel.app](https://secretkeygen.vercel.app/) yang tersedia, copy hasilnya, paste
 
    ![Set Environment Variable](docs/deploy-02-env.png)
 
@@ -89,9 +89,9 @@ cd <repo>
 
 Di Vercel dashboard → project → **Settings** → **Environment Variables**, tambahkan:
 
-| Variable      | Nilai                      | Keterangan                                                                                              |
-| ------------- | -------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `AUTH_SECRET` | Random string 32+ karakter | Untuk enkripsi session. Generate di [generate-secret.vercel.app](https://generate-secret.vercel.app/32) |
+| Variable      | Nilai                      | Keterangan                                                                                      |
+| ------------- | -------------------------- | ----------------------------------------------------------------------------------------------- |
+| `AUTH_SECRET` | Random string 32+ karakter | Untuk enkripsi session. Generate di [secretkeygen.vercel.app](https://secretkeygen.vercel.app/) |
 
 > `BLOB_READ_WRITE_TOKEN` sudah otomatis dari langkah 3.
 
