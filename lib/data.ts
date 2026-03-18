@@ -3,6 +3,7 @@ import { unstable_noStore as noStore } from 'next/cache'
 
 import type {
   AdminUser,
+  EducationMaterial,
   EducationMedia,
   Participant,
   QuizData,
@@ -14,6 +15,7 @@ const BLOB_KEY = 'settings.json'
 const QUIZ_BLOB_KEY = 'quiz.json'
 const PARTICIPANTS_BLOB_KEY = 'participants.json'
 const MEDIA_BLOB_KEY = 'education-media.json'
+const EDUCATION_MATERIALS_BLOB_KEY = 'education-materials.json'
 const HIGHLIGHT_BLOB_KEY = 'highlight.json'
 const ADMIN_BLOB_KEY = 'admin.json'
 
@@ -56,18 +58,10 @@ const defaultSettings: SiteSettings = {
   siteDescription: 'Platform edukasi digital',
   whatsappNumber: '',
   whatsappMessageTemplate: 'Halo, saya ingin bertanya.',
-  educationMaterials: [],
 }
 
 export const getSettings = async () => {
   const s = await readBlob(BLOB_KEY, defaultSettings)
-  // backward compat: migrate old field name
-  const raw = s as unknown as Record<string, unknown>
-  if (!s.educationMaterials && raw.educationMaterials) {
-    s.educationMaterials =
-      raw.educationMaterials as SiteSettings['educationMaterials']
-  }
-  s.educationMaterials ??= []
   return s
 }
 export const saveSettings = (s: SiteSettings) => writeBlob(BLOB_KEY, s)
@@ -92,6 +86,13 @@ export async function getParticipantByPhone(
   const participants = await getParticipants()
   return participants.find((p) => p.phone === phone)
 }
+
+// --- Education Materials ---
+
+export const getEducationMaterials = () =>
+  readBlob<EducationMaterial[]>(EDUCATION_MATERIALS_BLOB_KEY, [])
+export const saveEducationMaterials = (d: EducationMaterial[]) =>
+  writeBlob(EDUCATION_MATERIALS_BLOB_KEY, d)
 
 // --- Media Edukasi ---
 

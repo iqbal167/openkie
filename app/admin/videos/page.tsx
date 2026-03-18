@@ -41,7 +41,7 @@ export default function VideosPage() {
       setForm({ id: '', title: '' })
       setEditIndex(null)
       setStatus(isEdit ? 'Video diperbarui!' : 'Video ditambahkan!')
-      await load()
+      setVideos(await res.json())
     } else {
       setStatus('Gagal menyimpan.')
     }
@@ -54,8 +54,8 @@ export default function VideosPage() {
       body: JSON.stringify({ index }),
     })
     if (res.ok) {
+      setVideos(await res.json())
       setStatus('Video dihapus!')
-      await load()
     }
   }
 
@@ -76,15 +76,15 @@ export default function VideosPage() {
 
       <form onSubmit={handleSubmit} className="mb-6 flex flex-col gap-3">
         <input
-          placeholder="URL YouTube (misal: https://youtube.com/watch?v=...)"
-          value={form.id}
-          onChange={(e) => setForm((f) => ({ ...f, id: e.target.value }))}
-          className="rounded-md border px-3 py-2 text-sm"
-        />
-        <input
           placeholder="Judul Video"
           value={form.title}
           onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+          className="rounded-md border px-3 py-2 text-sm"
+        />
+        <input
+          placeholder="URL YouTube (misal: https://youtube.com/watch?v=...)"
+          value={form.id}
+          onChange={(e) => setForm((f) => ({ ...f, id: e.target.value }))}
           className="rounded-md border px-3 py-2 text-sm"
         />
         <div className="flex gap-2">

@@ -6,14 +6,15 @@ import { HeroSection } from '@/components/hero-section'
 import { QuizGate } from '@/components/quiz-gate'
 import { VideoSection } from '@/components/video-section'
 import { WhatsAppCTA, WhatsAppInlineCTA } from '@/components/whatsapp-cta'
-import { getHighlights, getSettings } from '@/lib/data'
+import { getEducationMaterials, getHighlights, getSettings } from '@/lib/data'
 
 export const revalidate = 0
 
 export default async function Home() {
-  const [settings, highlights] = await Promise.all([
+  const [settings, highlights, educationMaterials] = await Promise.all([
     getSettings(),
     getHighlights(),
+    getEducationMaterials(),
   ])
 
   const waProps = {
@@ -41,13 +42,13 @@ export default async function Home() {
         {settings.quizEnabled ? (
           <QuizGate educationTitle={settings.educationTitle}>
             <EdukasiSection
-              educationMaterials={settings.educationMaterials}
+              educationMaterials={educationMaterials}
               educationTitle={settings.educationTitle}
             />
           </QuizGate>
         ) : (
           <EdukasiSection
-            educationMaterials={settings.educationMaterials}
+            educationMaterials={educationMaterials}
             educationTitle={settings.educationTitle}
           />
         )}

@@ -23,7 +23,7 @@ export const POST = auth(async (req) => {
   const items = await getEducationMedia()
   items.push({ title, videoUrl })
   await saveEducationMedia(items)
-  return NextResponse.json({ success: true })
+  return NextResponse.json(items)
 })
 
 export const DELETE = auth(async (req) => {
@@ -35,5 +35,5 @@ export const DELETE = auth(async (req) => {
     return NextResponse.json({ error: 'Index tidak valid' }, { status: 400 })
   items.splice(index, 1)
   await saveEducationMedia(items)
-  return NextResponse.json({ success: true })
+  return NextResponse.json(items)
 })

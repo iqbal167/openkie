@@ -25,7 +25,7 @@ export const POST = auth(async (req) => {
   items.push({ id, title })
   await saveHighlights(items)
   revalidatePath('/')
-  return NextResponse.json({ success: true })
+  return NextResponse.json(items)
 })
 
 export const PUT = auth(async (req) => {
@@ -43,7 +43,7 @@ export const PUT = auth(async (req) => {
   items[index] = { id, title }
   await saveHighlights(items)
   revalidatePath('/')
-  return NextResponse.json({ success: true })
+  return NextResponse.json(items)
 })
 
 export const DELETE = auth(async (req) => {
@@ -56,5 +56,5 @@ export const DELETE = auth(async (req) => {
   items.splice(index, 1)
   await saveHighlights(items)
   revalidatePath('/')
-  return NextResponse.json({ success: true })
+  return NextResponse.json(items)
 })

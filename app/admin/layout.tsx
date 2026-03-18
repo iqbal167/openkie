@@ -8,7 +8,7 @@ const navLinks = [
   { href: '/admin/settings', label: 'Settings' },
   { href: '/admin/videos', label: 'Sorotan' },
   { href: '/admin/edukasi', label: 'Edukasi' },
-  { href: '/admin/media-edukasi', label: 'Media' },
+  { href: '/admin/media-edukasi', label: 'Media (Private)' },
   { href: '/admin/quiz', label: 'Quiz' },
   { href: '/admin/participants', label: 'Peserta' },
 ]

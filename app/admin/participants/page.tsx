@@ -25,8 +25,8 @@ export default function ParticipantsPage() {
   async function handleClear() {
     const res = await fetch('/api/admin/participants', { method: 'DELETE' })
     if (res.ok) {
+      setItems([])
       setStatus('Data peserta dihapus!')
-      await load()
     }
   }
 

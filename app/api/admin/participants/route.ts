@@ -16,5 +16,5 @@ export const DELETE = auth(async (req) => {
   if (!req.auth)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   await saveParticipants([])
-  return NextResponse.json({ success: true })
+  return NextResponse.json([])
 })

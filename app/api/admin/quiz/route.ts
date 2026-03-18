@@ -36,7 +36,7 @@ export const POST = auth(async (req) => {
   const quiz = await getQuizData()
   quiz[type].push({ ...question, id: crypto.randomUUID() })
   await saveQuizData(quiz)
-  return NextResponse.json({ success: true })
+  return NextResponse.json(quiz)
 })
 
 export const PUT = auth(async (req) => {
@@ -52,7 +52,7 @@ export const PUT = auth(async (req) => {
 
   quiz[type][index] = { ...question, id: quiz[type][index].id }
   await saveQuizData(quiz)
-  return NextResponse.json({ success: true })
+  return NextResponse.json(quiz)
 })
 
 export const DELETE = auth(async (req) => {
@@ -68,5 +68,5 @@ export const DELETE = auth(async (req) => {
 
   quiz[type].splice(index, 1)
   await saveQuizData(quiz)
-  return NextResponse.json({ success: true })
+  return NextResponse.json(quiz)
 })

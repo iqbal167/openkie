@@ -46,7 +46,7 @@ export default function EdukasiPage() {
       setForm({ ...emptyForm })
       setEditIndex(null)
       setStatus(isEdit ? 'Materi diperbarui!' : 'Materi ditambahkan!')
-      await load()
+      setItems(await res.json())
     } else {
       setStatus('Gagal menyimpan.')
     }
@@ -59,8 +59,8 @@ export default function EdukasiPage() {
       body: JSON.stringify({ index }),
     })
     if (res.ok) {
+      setItems(await res.json())
       setStatus('Materi dihapus!')
-      await load()
     }
   }
 

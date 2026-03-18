@@ -52,7 +52,8 @@ export default function QuizPage() {
       setForm({ ...emptyForm })
       setEditIndex(null)
       setStatus(isEdit ? 'Soal diperbarui!' : 'Soal ditambahkan!')
-      await load()
+      const quiz = await res.json()
+      setItems(quiz[type])
     } else {
       setStatus('Gagal menyimpan.')
     }
@@ -65,8 +66,9 @@ export default function QuizPage() {
       body: JSON.stringify({ type, index }),
     })
     if (res.ok) {
+      const quiz = await res.json()
+      setItems(quiz[type])
       setStatus('Soal dihapus!')
-      await load()
     }
   }
 

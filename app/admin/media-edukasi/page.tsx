@@ -41,7 +41,7 @@ export default function EducationMediaPage() {
       setTitle('')
       setVideoUrl('')
       setStatus('Video ditambahkan!')
-      await load()
+      setItems(await res.json())
     } else {
       setStatus('Gagal menyimpan.')
     }
@@ -54,8 +54,8 @@ export default function EducationMediaPage() {
       body: JSON.stringify({ index }),
     })
     if (res.ok) {
+      setItems(await res.json())
       setStatus('Video dihapus!')
-      await load()
     }
   }
 

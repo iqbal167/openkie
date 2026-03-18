@@ -14,7 +14,6 @@ export interface SiteSettings {
   siteDescription: string
   whatsappNumber: string
   whatsappMessageTemplate: string
-  educationMaterials: EducationMaterial[]
   quizEnabled?: boolean
   highlightTitle?: string
   educationTitle?: string
