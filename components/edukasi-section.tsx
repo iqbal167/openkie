@@ -67,39 +67,6 @@ export function EdukasiSection({ metodeMKJP }: EdukasiSectionProps) {
                     />
                   </div>
                 )}
-
-                {selected.kelebihan.length > 0 && (
-                  <div>
-                    <p className="font-semibold">Kelebihan:</p>
-                    <ul className="list-inside list-disc">
-                      {selected.kelebihan.map((item) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {selected.efekSamping.length > 0 && (
-                  <div>
-                    <p className="font-semibold">Efek Samping:</p>
-                    <ul className="list-inside list-disc">
-                      {selected.efekSamping.map((item) => (
-                        <li key={item}>{item}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                {selected.mitosVsFakta.mitos && (
-                  <div className="bg-muted rounded-md p-3">
-                    <p className="font-semibold">
-                      ❌ Mitos: {selected.mitosVsFakta.mitos}
-                    </p>
-                    <p className="mt-1">
-                      ✅ Fakta: {selected.mitosVsFakta.fakta}
-                    </p>
-                  </div>
-                )}
               </div>
             </>
           )}

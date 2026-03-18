@@ -85,3 +85,28 @@ export async function getParticipantByPhone(
   const participants = await getParticipants()
   return participants.find((p) => p.phone === phone)
 }
+
+// --- Media Edukasi (admin only) ---
+
+export async function getMediaEdukasi(): Promise<
+  import('@/lib/types').MediaEdukasi[]
+> {
+  try {
+    const meta = await head('media-edukasi.json')
+    const res = await fetch(meta.url, { cache: 'no-store' })
+    return (await res.json()) as import('@/lib/types').MediaEdukasi[]
+  } catch {
+    return []
+  }
+}
+
+export async function saveMediaEdukasi(
+  data: import('@/lib/types').MediaEdukasi[]
+): Promise<void> {
+  await put('media-edukasi.json', JSON.stringify(data, null, 2), {
+    access: 'public',
+    addRandomSuffix: false,
+    allowOverwrite: true,
+    contentType: 'application/json',
+  })
+}

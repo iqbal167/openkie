@@ -24,9 +24,6 @@ export const POST = auth(async (req) => {
   settings.metodeMKJP.push({
     nama: body.nama,
     deskripsi: body.deskripsi,
-    kelebihan: body.kelebihan ?? [],
-    efekSamping: body.efekSamping ?? [],
-    mitosVsFakta: body.mitosVsFakta ?? { mitos: '', fakta: '' },
     videoUrl: body.videoUrl ?? '',
   })
   await saveSettings(settings)
@@ -49,9 +46,6 @@ export const PUT = auth(async (req) => {
   settings.metodeMKJP[body.index] = {
     nama: body.nama,
     deskripsi: body.deskripsi,
-    kelebihan: body.kelebihan ?? [],
-    efekSamping: body.efekSamping ?? [],
-    mitosVsFakta: body.mitosVsFakta ?? { mitos: '', fakta: '' },
     videoUrl: body.videoUrl ?? '',
   }
   await saveSettings(settings)

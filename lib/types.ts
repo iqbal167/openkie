@@ -6,9 +6,6 @@ export interface VideoTestimonial {
 export interface MetodeMKJP {
   nama: string
   deskripsi: string
-  kelebihan: string[]
-  efekSamping: string[]
-  mitosVsFakta: { mitos: string; fakta: string }
   videoUrl?: string
 }
 
@@ -46,4 +43,9 @@ export interface Participant {
   preTest?: QuizResult
   postTest?: QuizResult
   registeredAt: string
+}
+
+export interface MediaEdukasi {
+  title: string
+  videoUrl: string
 }

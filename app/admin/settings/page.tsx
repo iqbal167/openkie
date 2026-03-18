@@ -25,7 +25,7 @@ export default function SettingsPage() {
   const loadSettings = useCallback(async () => {
     const res = await fetch('/api/admin/settings')
     const data = await res.json()
-    setForm(data)
+    setForm({ ...data, quizEnabled: data.quizEnabled ?? false })
   }, [])
 
   useEffect(() => {
