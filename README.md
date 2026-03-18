@@ -29,9 +29,7 @@ Platform KIE (Komunikasi, Informasi, Edukasi) digital open-source yang bisa di-d
 
 Cara paling mudah — klik tombol di bawah:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/USERNAME/REPO&env=AUTH_SECRET&envDescription=Secret%20untuk%20enkripsi%20session.%20Generate%20di%20link%20berikut.&envLink=https://generate-secret.vercel.app/32&stores=[{"type":"blob"}])
-
-> ⚠️ Ganti `USERNAME/REPO` di URL tombol dengan repo GitHub kamu.
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/iqbal167/openkie&env=AUTH_SECRET&envDescription=Secret%20untuk%20enkripsi%20session.%20Generate%20di%20link%20berikut.&envLink=https://generate-secret.vercel.app/32&stores=[{"type":"blob"}])
 
 ### Langkah-langkah:
 
