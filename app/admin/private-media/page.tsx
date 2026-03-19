@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 import { ConfirmDelete } from '@/components/confirm-delete'
 import { SkeletonList } from '@/components/skeleton'
@@ -12,7 +13,6 @@ export default function EducationMediaPage() {
   const [title, setTitle] = useState('')
   const [videoUrl, setVideoUrl] = useState('')
   const [editId, setEditId] = useState<number | null>(null)
-  const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
@@ -31,7 +31,7 @@ export default function EducationMediaPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!title || !videoUrl) {
-      setStatus('Title dan URL wajib diisi.')
+      toast.error('Title dan URL wajib diisi.')
       return
     }
     const isEdit = editId !== null
@@ -47,10 +47,10 @@ export default function EducationMediaPage() {
       setTitle('')
       setVideoUrl('')
       setEditId(null)
-      setStatus(isEdit ? 'Video diperbarui!' : 'Video ditambahkan!')
+      toast.success(isEdit ? 'Video diperbarui!' : 'Video ditambahkan!')
       setItems(await res.json())
     } else {
-      setStatus('Gagal menyimpan.')
+      toast.error('Gagal menyimpan.')
     }
     setSaving(false)
   }
@@ -63,7 +63,7 @@ export default function EducationMediaPage() {
     })
     if (res.ok) {
       setItems(await res.json())
-      setStatus('Video dihapus!')
+      toast.success('Video dihapus!')
     }
   }
 
@@ -71,7 +71,6 @@ export default function EducationMediaPage() {
     setEditId(item.id)
     setTitle(item.title)
     setVideoUrl(item.videoUrl)
-    setStatus('')
   }
 
   function cancelEdit() {
@@ -122,13 +121,6 @@ export default function EducationMediaPage() {
             </button>
           )}
         </div>
-        {status && (
-          <p
-            className={`text-sm ${status.includes('Gagal') || status.includes('wajib') ? 'text-red-500' : 'text-green-600'}`}
-          >
-            {status}
-          </p>
-        )}
       </form>
 
       {loading ? (

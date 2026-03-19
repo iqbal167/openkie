@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 import { ConfirmDelete } from '@/components/confirm-delete'
 import { SkeletonList } from '@/components/skeleton'
@@ -15,7 +16,6 @@ export default function QuizPage() {
   const [items, setItems] = useState<Question[]>([])
   const [form, setForm] = useState({ ...emptyForm })
   const [editId, setEditId] = useState<string | null>(null)
-  const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
@@ -34,7 +34,7 @@ export default function QuizPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!form.question || form.options.some((p) => !p)) {
-      setStatus('Soal dan semua pilihan wajib diisi.')
+      toast.error('Soal dan semua pilihan wajib diisi.')
       return
     }
 
@@ -51,10 +51,10 @@ export default function QuizPage() {
     if (res.ok) {
       setForm({ ...emptyForm })
       setEditId(null)
-      setStatus(isEdit ? 'Soal diperbarui!' : 'Soal ditambahkan!')
+      toast.success(isEdit ? 'Soal diperbarui!' : 'Soal ditambahkan!')
       setItems(await res.json())
     } else {
-      setStatus('Gagal menyimpan.')
+      toast.error('Gagal menyimpan.')
     }
     setSaving(false)
   }
@@ -67,7 +67,7 @@ export default function QuizPage() {
     })
     if (res.ok) {
       setItems(await res.json())
-      setStatus('Soal dihapus!')
+      toast.success('Soal dihapus!')
     }
   }
 
@@ -78,7 +78,6 @@ export default function QuizPage() {
       correctAnswer: q.correctAnswer,
     })
     setEditId(q.id)
-    setStatus('')
   }
 
   function cancelEdit() {
@@ -100,7 +99,6 @@ export default function QuizPage() {
               setType(t)
               setEditId(null)
               setForm({ ...emptyForm })
-              setStatus('')
             }}
             className={`rounded-md px-4 py-2 text-sm font-medium ${type === t ? 'bg-primary text-primary-foreground' : 'border'}`}
           >
@@ -164,13 +162,6 @@ export default function QuizPage() {
             </button>
           )}
         </div>
-        {status && (
-          <p
-            className={`text-sm ${status.includes('Gagal') || status.includes('wajib') ? 'text-red-500' : 'text-green-600'}`}
-          >
-            {status}
-          </p>
-        )}
       </form>
 
       <h3 className="mb-2 text-sm font-semibold">

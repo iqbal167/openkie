@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 import { ConfirmDelete } from '@/components/confirm-delete'
 import { SkeletonList } from '@/components/skeleton'
@@ -10,7 +11,6 @@ export default function VideosPage() {
   const [videos, setVideos] = useState<VideoTestimonial[]>([])
   const [form, setForm] = useState({ videoId: '', title: '' })
   const [editId, setEditId] = useState<number | null>(null)
-  const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
@@ -41,10 +41,10 @@ export default function VideosPage() {
     if (res.ok) {
       setForm({ videoId: '', title: '' })
       setEditId(null)
-      setStatus(isEdit ? 'Video diperbarui!' : 'Video ditambahkan!')
+      toast.success(isEdit ? 'Video diperbarui!' : 'Video ditambahkan!')
       setVideos(await res.json())
     } else {
-      setStatus('Gagal menyimpan.')
+      toast.error('Gagal menyimpan.')
     }
     setSaving(false)
   }
@@ -57,14 +57,13 @@ export default function VideosPage() {
     })
     if (res.ok) {
       setVideos(await res.json())
-      setStatus('Video dihapus!')
+      toast.success('Video dihapus!')
     }
   }
 
   function startEdit(v: VideoTestimonial) {
     setEditId(v.id)
     setForm({ videoId: v.videoId, title: v.title })
-    setStatus('')
   }
 
   function cancelEdit() {
@@ -107,7 +106,6 @@ export default function VideosPage() {
             </button>
           )}
         </div>
-        {status && <p className="text-sm text-green-600">{status}</p>}
       </form>
 
       {loading ? (

@@ -4,19 +4,20 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { Suspense, useState } from 'react'
+import { toast } from 'sonner'
 
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [error, setError] = useState(
-    searchParams.get('error') ? 'Email atau password salah' : ''
-  )
   const [loading, setLoading] = useState(false)
+
+  if (searchParams.get('error')) {
+    toast.error('Email atau password salah')
+  }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
-    setError('')
 
     const formData = new FormData(e.currentTarget)
     const res = await signIn('credentials', {
@@ -26,7 +27,7 @@ function LoginForm() {
     })
 
     if (res?.error) {
-      setError('Email atau password salah')
+      toast.error('Email atau password salah')
       setLoading(false)
     } else {
       router.push('/admin')
@@ -52,7 +53,6 @@ function LoginForm() {
         required
         className="rounded-md border px-4 py-2"
       />
-      {error && <p className="text-sm text-red-600">{error}</p>}
       <button
         type="submit"
         disabled={loading}

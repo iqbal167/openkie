@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 import { ConfirmDelete } from '@/components/confirm-delete'
 import { SkeletonList } from '@/components/skeleton'
@@ -9,7 +10,6 @@ import type { Participant } from '@/lib/types'
 export default function ParticipantsPage() {
   const [items, setItems] = useState<Participant[]>([])
   const [loading, setLoading] = useState(true)
-  const [status, setStatus] = useState('')
 
   const load = useCallback(async () => {
     const res = await fetch(`/api/admin/participants?t=${Date.now()}`)
@@ -26,7 +26,7 @@ export default function ParticipantsPage() {
     const res = await fetch('/api/admin/participants', { method: 'DELETE' })
     if (res.ok) {
       setItems([])
-      setStatus('Data peserta dihapus!')
+      toast.success('Data peserta dihapus!')
     }
   }
 
@@ -44,7 +44,6 @@ export default function ParticipantsPage() {
           </ConfirmDelete>
         )}
       </div>
-      {status && <p className="mb-3 text-sm text-green-600">{status}</p>}
 
       {items.length === 0 ? (
         <p className="text-muted-foreground text-sm">Belum ada peserta.</p>

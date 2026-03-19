@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 import { ConfirmDelete } from '@/components/confirm-delete'
 import { SkeletonList } from '@/components/skeleton'
@@ -12,7 +13,6 @@ export default function EdukasiPage() {
   const [items, setItems] = useState<EducationMaterial[]>([])
   const [form, setForm] = useState({ ...emptyForm })
   const [editId, setEditId] = useState<number | null>(null)
-  const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
@@ -43,10 +43,10 @@ export default function EdukasiPage() {
     if (res.ok) {
       setForm({ ...emptyForm })
       setEditId(null)
-      setStatus(isEdit ? 'Materi diperbarui!' : 'Materi ditambahkan!')
+      toast.success(isEdit ? 'Materi diperbarui!' : 'Materi ditambahkan!')
       setItems(await res.json())
     } else {
-      setStatus('Gagal menyimpan.')
+      toast.error('Gagal menyimpan.')
     }
     setSaving(false)
   }
@@ -59,7 +59,7 @@ export default function EdukasiPage() {
     })
     if (res.ok) {
       setItems(await res.json())
-      setStatus('Materi dihapus!')
+      toast.success('Materi dihapus!')
     }
   }
 
@@ -70,7 +70,6 @@ export default function EdukasiPage() {
       description: item.description,
       videoUrl: item.videoUrl ?? '',
     })
-    setStatus('')
   }
 
   function cancelEdit() {
@@ -123,7 +122,6 @@ export default function EdukasiPage() {
             </button>
           )}
         </div>
-        {status && <p className="text-sm text-green-600">{status}</p>}
       </form>
 
       {loading ? (

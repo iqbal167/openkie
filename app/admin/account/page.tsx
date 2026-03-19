@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 export default function AccountPage() {
   const [form, setForm] = useState({
@@ -9,27 +10,25 @@ export default function AccountPage() {
     newPassword: '',
     confirmPassword: '',
   })
-  const [status, setStatus] = useState('')
   const [saving, setSaving] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setStatus('')
 
     if (!form.currentPassword) {
-      setStatus('Password lama wajib diisi.')
+      toast.error('Password lama wajib diisi.')
       return
     }
     if (form.newPassword && form.newPassword !== form.confirmPassword) {
-      setStatus('Password baru tidak sama.')
+      toast.error('Password baru tidak sama.')
       return
     }
     if (form.newPassword && form.newPassword.length < 6) {
-      setStatus('Password baru minimal 6 karakter.')
+      toast.error('Password baru minimal 6 karakter.')
       return
     }
     if (!form.newUsername && !form.newPassword) {
-      setStatus('Isi username baru atau password baru.')
+      toast.error('Isi username baru atau password baru.')
       return
     }
 
@@ -51,17 +50,17 @@ export default function AccountPage() {
         newPassword: '',
         confirmPassword: '',
       })
-      setStatus('Berhasil diperbarui!')
+      toast.success('Berhasil diperbarui!')
     } else {
       const data = await res.json()
-      setStatus(data.error || 'Gagal memperbarui.')
+      toast.error(data.error || 'Gagal memperbarui.')
     }
     setSaving(false)
   }
 
   return (
     <div>
-      <h2 className="mb-4 text-lg font-bold">Akun Admin</h2>
+      <h2 className="mb-4 text-lg font-bold">Akun</h2>
       <form onSubmit={handleSubmit} className="flex max-w-sm flex-col gap-4">
         <label className="flex flex-col gap-1">
           <span className="text-sm font-medium">Password Lama *</span>
@@ -111,13 +110,6 @@ export default function AccountPage() {
             className="rounded-md border px-3 py-2 text-sm"
           />
         </label>
-        {status && (
-          <p
-            className={`text-sm ${status.includes('Berhasil') ? 'text-green-600' : 'text-red-500'}`}
-          >
-            {status}
-          </p>
-        )}
         <button
           type="submit"
           disabled={saving}

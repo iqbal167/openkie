@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -30,6 +31,7 @@ export default function RegisterPage() {
       body: JSON.stringify({ email, password }),
     })
     if (res.ok) {
+      toast.success('Akun berhasil dibuat!')
       router.push('/login')
     } else {
       const text = await res.text()

@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
+import { toast } from 'sonner'
 
 interface SettingsForm {
   siteName: string
@@ -24,10 +25,7 @@ export default function SettingsPage() {
     educationTitle: '',
     footerText: '',
   })
-  const [status, setStatus] = useState<'idle' | 'saving' | 'success' | 'error'>(
-    'idle'
-  )
-  const [waError, setWaError] = useState('')
+  const [saving, setSaving] = useState(false)
 
   const loadSettings = useCallback(async () => {
     const res = await fetch(`/api/admin/settings?t=${Date.now()}`)
@@ -56,22 +54,25 @@ export default function SettingsPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (form.whatsappNumber && !/^62\d{9,13}$/.test(form.whatsappNumber)) {
-      setWaError('Format: 62 diikuti 9-13 digit (contoh: 6287885684726)')
+      toast.error('Format WA: 62 diikuti 9-13 digit (contoh: 6287885684726)')
       return
     }
-    setWaError('')
-    setStatus('saving')
+    setSaving(true)
     const res = await fetch('/api/admin/settings', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form),
     })
-    setStatus(res.ok ? 'success' : 'error')
+    if (res.ok) {
+      toast.success('Berhasil disimpan!')
+    } else {
+      toast.error('Gagal menyimpan.')
+    }
+    setSaving(false)
   }
 
   function update(field: keyof SettingsForm, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }))
-    setStatus('idle')
   }
 
   type Field = {
@@ -137,7 +138,6 @@ export default function SettingsPage() {
           <h2 className="mb-3 text-lg font-bold">Featured</h2>
           <div className="flex flex-col gap-4">
             {renderFields(featuredFields)}
-            {waError && <p className="text-sm text-red-500">{waError}</p>}
           </div>
         </section>
 
@@ -170,17 +170,11 @@ export default function SettingsPage() {
 
         <button
           type="submit"
-          disabled={status === 'saving'}
+          disabled={saving}
           className="bg-primary text-primary-foreground rounded-md px-4 py-2 text-sm font-semibold disabled:opacity-50"
         >
-          {status === 'saving' ? 'Menyimpan...' : 'Simpan'}
+          {saving ? 'Menyimpan...' : 'Simpan'}
         </button>
-        {status === 'success' && (
-          <p className="text-sm text-green-600">Berhasil disimpan!</p>
-        )}
-        {status === 'error' && (
-          <p className="text-sm text-red-600">Gagal menyimpan. Coba lagi.</p>
-        )}
       </form>
     </div>
   )
