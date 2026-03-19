@@ -11,6 +11,7 @@ const navLinks = [
   { href: '/admin/private-media', label: 'Media (Private)' },
   { href: '/admin/quiz', label: 'Quiz' },
   { href: '/admin/participants', label: 'Peserta' },
+  { href: '/admin/account', label: 'Akun' },
 ]
 
 export default function AdminLayout({
