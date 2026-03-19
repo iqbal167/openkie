@@ -27,6 +27,7 @@ export default function SettingsPage() {
   const [status, setStatus] = useState<'idle' | 'saving' | 'success' | 'error'>(
     'idle'
   )
+  const [waError, setWaError] = useState('')
 
   const loadSettings = useCallback(async () => {
     const res = await fetch(`/api/admin/settings?t=${Date.now()}`)
@@ -45,8 +46,20 @@ export default function SettingsPage() {
     void loadSettings()
   }, [loadSettings])
 
+  function formatWhatsApp(value: string): string {
+    const digits = value.replace(/\D/g, '')
+    if (digits.startsWith('08')) return '62' + digits.slice(1)
+    if (digits.startsWith('+62')) return digits.slice(1)
+    return digits
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (form.whatsappNumber && !/^62\d{9,13}$/.test(form.whatsappNumber)) {
+      setWaError('Format: 62 diikuti 9-13 digit (contoh: 6287885684726)')
+      return
+    }
+    setWaError('')
     setStatus('saving')
     const res = await fetch('/api/admin/settings', {
       method: 'PUT',
@@ -65,13 +78,18 @@ export default function SettingsPage() {
     key: Exclude<keyof SettingsForm, 'quizEnabled'>
     label: string
     textarea?: boolean
+    placeholder?: string
   }
 
   const featuredFields: Field[] = [
     { key: 'highlightTitle', label: 'Judul Section Sorotan' },
     { key: 'siteName', label: 'Nama Situs' },
     { key: 'siteDescription', label: 'Deskripsi Situs', textarea: true },
-    { key: 'whatsappNumber', label: 'Nomor WhatsApp' },
+    {
+      key: 'whatsappNumber',
+      label: 'Nomor WhatsApp',
+      placeholder: '6287885684726',
+    },
     {
       key: 'whatsappMessageTemplate',
       label: 'Template Pesan WhatsApp',
@@ -85,7 +103,7 @@ export default function SettingsPage() {
   ]
 
   function renderFields(fields: Field[]) {
-    return fields.map(({ key, label, textarea }) => (
+    return fields.map(({ key, label, textarea, placeholder }) => (
       <label key={key} className="flex flex-col gap-1">
         <span className="text-sm font-medium">{label}</span>
         {textarea ? (
@@ -99,6 +117,12 @@ export default function SettingsPage() {
           <input
             value={form[key]}
             onChange={(e) => update(key, e.target.value)}
+            onBlur={
+              key === 'whatsappNumber'
+                ? () => update(key, formatWhatsApp(form[key]))
+                : undefined
+            }
+            placeholder={placeholder}
             className="rounded-md border px-3 py-2 text-sm"
           />
         )}
@@ -113,6 +137,7 @@ export default function SettingsPage() {
           <h2 className="mb-3 text-lg font-bold">Featured</h2>
           <div className="flex flex-col gap-4">
             {renderFields(featuredFields)}
+            {waError && <p className="text-sm text-red-500">{waError}</p>}
           </div>
         </section>
 
