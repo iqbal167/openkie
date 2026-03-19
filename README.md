@@ -47,11 +47,11 @@ Sebelum klik Deploy, buat project Supabase dulu:
 3. Klik tombol **Deploy with Vercel** di atas
 4. Isi environment variables:
 
-   | Variable                        | Nilai                                                                                               |
-   | ------------------------------- | --------------------------------------------------------------------------------------------------- |
-   | `AUTH_SECRET`                   | Random string 32+ karakter. Generate di [secretkeygen.vercel.app](https://secretkeygen.vercel.app/) |
-   | `NEXT_PUBLIC_SUPABASE_URL`      | Project URL dari Supabase dashboard (Settings → API)                                                |
-   | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | anon public key dari Supabase dashboard (Settings → API)                                            |
+   | Variable            | Nilai                                                                                               |
+   | ------------------- | --------------------------------------------------------------------------------------------------- |
+   | `AUTH_SECRET`       | Random string 32+ karakter. Generate di [secretkeygen.vercel.app](https://secretkeygen.vercel.app/) |
+   | `SUPABASE_URL`      | Project URL dari Supabase dashboard (Settings → API)                                                |
+   | `SUPABASE_ANON_KEY` | anon public key dari Supabase dashboard (Settings → API)                                            |
 
 5. Klik **Deploy** dan tunggu sampai selesai
 6. Buka URL project → akan muncul halaman utama
@@ -87,11 +87,11 @@ cd <repo>
 
 Di Vercel dashboard → project → **Settings** → **Environment Variables**, tambahkan:
 
-| Variable                        | Nilai                      | Keterangan                                                                                      |
-| ------------------------------- | -------------------------- | ----------------------------------------------------------------------------------------------- |
-| `AUTH_SECRET`                   | Random string 32+ karakter | Untuk enkripsi session. Generate di [secretkeygen.vercel.app](https://secretkeygen.vercel.app/) |
-| `NEXT_PUBLIC_SUPABASE_URL`      | Project URL Supabase       | Dari Supabase dashboard → Settings → API                                                        |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | anon public key            | Dari Supabase dashboard → Settings → API                                                        |
+| Variable            | Nilai                      | Keterangan                                                                                      |
+| ------------------- | -------------------------- | ----------------------------------------------------------------------------------------------- |
+| `AUTH_SECRET`       | Random string 32+ karakter | Untuk enkripsi session. Generate di [secretkeygen.vercel.app](https://secretkeygen.vercel.app/) |
+| `SUPABASE_URL`      | Project URL Supabase       | Dari Supabase dashboard → Settings → API                                                        |
+| `SUPABASE_ANON_KEY` | anon public key            | Dari Supabase dashboard → Settings → API                                                        |
 
 ### 5. Deploy
 
@@ -128,8 +128,8 @@ Edit `.env.local`:
 
 ```env
 AUTH_SECRET=random-string-minimal-32-karakter
-NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGci...
+SUPABASE_URL=https://xxx.supabase.co
+SUPABASE_ANON_KEY=eyJhbGci...
 ```
 
 Jalankan SQL schema di Supabase SQL Editor:
@@ -170,11 +170,11 @@ Buka [http://localhost:3000](http://localhost:3000).
 
 ## Environment Variables
 
-| Variable                        | Wajib | Keterangan                    |
-| ------------------------------- | ----- | ----------------------------- |
-| `AUTH_SECRET`                   | ✅    | Secret untuk NextAuth session |
-| `NEXT_PUBLIC_SUPABASE_URL`      | ✅    | URL project Supabase          |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | ✅    | Anon public key dari Supabase |
+| Variable            | Wajib | Keterangan                    |
+| ------------------- | ----- | ----------------------------- |
+| `AUTH_SECRET`       | ✅    | Secret untuk NextAuth session |
+| `SUPABASE_URL`      | ✅    | URL project Supabase          |
+| `SUPABASE_ANON_KEY` | ✅    | Anon public key dari Supabase |
 
 ## Lisensi
 
