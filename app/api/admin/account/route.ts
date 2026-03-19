@@ -51,3 +51,28 @@ export const PUT = auth(async (req) => {
   await supabase.from('users').update(updates).eq('id', userId)
   return NextResponse.json({ success: true })
 })
+
+export const DELETE = auth(async (req) => {
+  if (!req.auth)
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const userId = req.auth.user!.id!
+
+  const { currentPassword } = await req.json()
+
+  const { data: user } = await supabase
+    .from('users')
+    .select('password_hash')
+    .eq('id', userId)
+    .single()
+  if (!user)
+    return NextResponse.json({ error: 'User not found' }, { status: 404 })
+
+  if (
+    !currentPassword ||
+    !(await bcrypt.compare(currentPassword, user.password_hash))
+  )
+    return NextResponse.json({ error: 'Password salah' }, { status: 403 })
+
+  await supabase.from('users').delete().eq('id', userId)
+  return NextResponse.json({ success: true })
+})

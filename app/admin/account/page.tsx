@@ -1,7 +1,10 @@
 'use client'
 
+import { signOut } from 'next-auth/react'
 import { useState } from 'react'
 import { toast } from 'sonner'
+
+import { ConfirmDelete } from '@/components/confirm-delete'
 
 export default function AccountPage() {
   const [form, setForm] = useState({
@@ -11,6 +14,7 @@ export default function AccountPage() {
     confirmPassword: '',
   })
   const [saving, setSaving] = useState(false)
+  const [deletePassword, setDeletePassword] = useState('')
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -118,6 +122,49 @@ export default function AccountPage() {
           {saving ? 'Menyimpan...' : 'Simpan'}
         </button>
       </form>
+
+      <hr className="my-8" />
+
+      <section className="max-w-sm">
+        <h3 className="mb-2 text-lg font-bold text-red-600">Hapus Akun</h3>
+        <p className="text-muted-foreground mb-4 text-sm">
+          Semua data dan konten akan dihapus permanen. Tindakan ini tidak bisa
+          dibatalkan.
+        </p>
+        <label className="mb-3 flex flex-col gap-1">
+          <span className="text-sm font-medium">Konfirmasi Password *</span>
+          <input
+            type="password"
+            value={deletePassword}
+            onChange={(e) => setDeletePassword(e.target.value)}
+            className="rounded-md border px-3 py-2 text-sm"
+          />
+        </label>
+        <ConfirmDelete
+          onConfirm={async () => {
+            if (!deletePassword) {
+              toast.error('Password wajib diisi.')
+              return
+            }
+            const res = await fetch('/api/admin/account', {
+              method: 'DELETE',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ currentPassword: deletePassword }),
+            })
+            if (res.ok) {
+              toast.success('Akun berhasil dihapus.')
+              await signOut({ redirectTo: '/' })
+            } else {
+              const data = await res.json()
+              toast.error(data.error || 'Gagal menghapus akun.')
+            }
+          }}
+        >
+          <button className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700">
+            Hapus Akun
+          </button>
+        </ConfirmDelete>
+      </section>
     </div>
   )
 }
