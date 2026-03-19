@@ -63,7 +63,7 @@ export function EdukasiSection({
                 <DialogTitle>{selected.name}</DialogTitle>
               </DialogHeader>
               <div className="space-y-4 text-sm leading-relaxed">
-                <p>{selected.description}</p>
+                <p className="whitespace-pre-line">{selected.description}</p>
 
                 {selected.videoUrl && (
                   <div className="relative aspect-video overflow-hidden rounded-lg">
