@@ -14,7 +14,7 @@ export default function QuizPage() {
   const [type, setType] = useState<QuizType>('preTest')
   const [items, setItems] = useState<Question[]>([])
   const [form, setForm] = useState({ ...emptyForm })
-  const [editIndex, setEditIndex] = useState<number | null>(null)
+  const [editId, setEditId] = useState<string | null>(null)
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -38,56 +38,51 @@ export default function QuizPage() {
       return
     }
 
-    const isEdit = editIndex !== null
+    const isEdit = editId !== null
     setSaving(true)
     const res = await fetch('/api/admin/quiz', {
       method: isEdit ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(
-        isEdit
-          ? { type, index: editIndex, question: form }
-          : { type, question: form }
+        isEdit ? { type, id: editId, question: form } : { type, question: form }
       ),
     })
 
     if (res.ok) {
       setForm({ ...emptyForm })
-      setEditIndex(null)
+      setEditId(null)
       setStatus(isEdit ? 'Soal diperbarui!' : 'Soal ditambahkan!')
-      const quiz = await res.json()
-      setItems(quiz[type])
+      setItems(await res.json())
     } else {
       setStatus('Gagal menyimpan.')
     }
     setSaving(false)
   }
 
-  async function handleDelete(index: number) {
+  async function handleDelete(id: string) {
     const res = await fetch('/api/admin/quiz', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type, index }),
+      body: JSON.stringify({ type, id }),
     })
     if (res.ok) {
-      const quiz = await res.json()
-      setItems(quiz[type])
+      setItems(await res.json())
       setStatus('Soal dihapus!')
     }
   }
 
-  function startEdit(index: number) {
-    const q = items[index]
+  function startEdit(q: Question) {
     setForm({
       question: q.question,
       options: [...q.options],
       correctAnswer: q.correctAnswer,
     })
-    setEditIndex(index)
+    setEditId(q.id)
     setStatus('')
   }
 
   function cancelEdit() {
-    setEditIndex(null)
+    setEditId(null)
     setForm({ ...emptyForm })
   }
 
@@ -103,7 +98,7 @@ export default function QuizPage() {
             key={t}
             onClick={() => {
               setType(t)
-              setEditIndex(null)
+              setEditId(null)
               setForm({ ...emptyForm })
               setStatus('')
             }}
@@ -136,9 +131,9 @@ export default function QuizPage() {
               value={p}
               onChange={(e) =>
                 setForm((f) => {
-                  const pilihan = [...f.options]
-                  pilihan[i] = e.target.value
-                  return { ...f, pilihan }
+                  const options = [...f.options]
+                  options[i] = e.target.value
+                  return { ...f, options }
                 })
               }
               className="flex-1 rounded-md border px-3 py-2 text-sm"
@@ -157,9 +152,9 @@ export default function QuizPage() {
           >
             {saving
               ? 'Menyimpan...'
-              : `${editIndex !== null ? 'Update' : 'Tambah'} Soal ${label}`}
+              : `${editId !== null ? 'Update' : 'Tambah'} Soal ${label}`}
           </button>
-          {editIndex !== null && (
+          {editId !== null && (
             <button
               type="button"
               onClick={cancelEdit}
@@ -206,14 +201,14 @@ export default function QuizPage() {
               </div>
               <div className="ml-2 flex gap-2">
                 <button
-                  onClick={() => startEdit(i)}
+                  onClick={() => startEdit(q)}
                   className="text-sm text-blue-600 hover:underline"
                 >
                   Edit
                 </button>
                 <ConfirmDelete
                   onConfirm={async () => {
-                    await handleDelete(i)
+                    await handleDelete(q.id)
                   }}
                 >
                   <button className="text-sm text-red-600 hover:underline">

@@ -1,35 +1,21 @@
 import { NextResponse } from 'next/server'
 
 import { auth } from '@/lib/auth'
-import { getAdmin } from '@/lib/data'
 
-export default auth(async (req) => {
+export default auth((req) => {
   const { pathname } = req.nextUrl
-  const isSetupPage = pathname === '/admin/setup'
-  const isSetupApi = pathname === '/api/admin/setup'
-  const isLoginPage = pathname === '/admin/login'
+
   const isLoggedIn = !!req.auth
-
-  const admin = await getAdmin()
-
-  // No admin yet: redirect to setup (except setup page/api itself)
-  if (!admin) {
-    if (isSetupPage || isSetupApi) return NextResponse.next()
-    return NextResponse.redirect(new URL('/admin/setup', req.url))
-  }
-
-  // Admin exists: block setup page
-  if (isSetupPage) {
-    return NextResponse.redirect(new URL('/admin', req.url))
-  }
+  const isLoginPage = pathname === '/login'
+  const isRegisterPage = pathname === '/register'
 
   // Not logged in: redirect to login
-  if (!isLoginPage && !isLoggedIn) {
-    return NextResponse.redirect(new URL('/admin/login', req.url))
+  if (!isLoggedIn && !isLoginPage && !isRegisterPage) {
+    return NextResponse.redirect(new URL('/login', req.url))
   }
 
-  // Already logged in: skip login page
-  if (isLoginPage && isLoggedIn) {
+  // Already logged in: skip login/register
+  if (isLoggedIn && (isLoginPage || isRegisterPage)) {
     return NextResponse.redirect(new URL('/admin', req.url))
   }
 
@@ -37,5 +23,5 @@ export default auth(async (req) => {
 })
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/admin/setup'],
+  matcher: ['/admin/:path*', '/login', '/register'],
 }

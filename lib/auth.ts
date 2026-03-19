@@ -2,29 +2,40 @@ import bcrypt from 'bcryptjs'
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 
-import { getAdmin } from '@/lib/data'
+import { getUserByEmail } from '@/lib/data'
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
-      credentials: { username: {}, password: {} },
+      credentials: { email: {}, password: {} },
       async authorize(credentials) {
-        const username = credentials?.username as string
+        const email = credentials?.email as string
         const password = credentials?.password as string
-        if (!username || !password) return null
+        if (!email || !password) return null
 
-        const admin = await getAdmin()
-        if (!admin) return null
+        const user = await getUserByEmail(email)
+        if (!user) return null
 
-        if (
-          admin.username === username &&
-          (await bcrypt.compare(password, admin.passwordHash))
-        ) {
-          return { id: '1', name: admin.username }
+        if (await bcrypt.compare(password, user.passwordHash)) {
+          return { id: user.id, name: user.username, email: user.email }
         }
         return null
       },
     }),
   ],
-  pages: { signIn: '/admin/login' },
+  callbacks: {
+    jwt({ token, user }) {
+      if (user) {
+        token.userId = user.id
+        token.username = user.name
+      }
+      return token
+    },
+    session({ session, token }) {
+      session.user.id = token.userId as string
+      session.user.name = token.username as string
+      return session
+    },
+  },
+  pages: { signIn: '/login' },
 })

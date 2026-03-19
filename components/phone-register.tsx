@@ -4,9 +4,10 @@ import { useState } from 'react'
 
 interface PhoneRegisterProps {
   onRegistered: (phone: string, name: string) => void
+  username: string
 }
 
-export function PhoneRegister({ onRegistered }: PhoneRegisterProps) {
+export function PhoneRegister({ onRegistered, username }: PhoneRegisterProps) {
   const [phone, setPhone] = useState('')
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -20,7 +21,7 @@ export function PhoneRegister({ onRegistered }: PhoneRegisterProps) {
       return
     }
     if (!name.trim()) {
-      setError('Name is required')
+      setError('Nama wajib diisi')
       return
     }
 
@@ -30,10 +31,9 @@ export function PhoneRegister({ onRegistered }: PhoneRegisterProps) {
       const res = await fetch('/api/quiz/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: cleaned, name: name.trim() }),
+        body: JSON.stringify({ phone: cleaned, name: name.trim(), username }),
       })
       if (res.ok) {
-        localStorage.setItem('quiz_phone', cleaned)
         onRegistered(cleaned, name.trim())
       } else {
         setError('Gagal mendaftar, coba lagi.')

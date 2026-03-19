@@ -34,7 +34,7 @@ export default function AccountPage() {
     }
 
     setSaving(true)
-    const res = await fetch('/api/admin/setup', {
+    const res = await fetch('/api/admin/account', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

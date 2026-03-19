@@ -11,7 +11,7 @@ export default function EducationMediaPage() {
   const [items, setItems] = useState<EducationMedia[]>([])
   const [title, setTitle] = useState('')
   const [videoUrl, setVideoUrl] = useState('')
-  const [editIndex, setEditIndex] = useState<number | null>(null)
+  const [editId, setEditId] = useState<number | null>(null)
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -34,19 +34,19 @@ export default function EducationMediaPage() {
       setStatus('Title dan URL wajib diisi.')
       return
     }
-    const isEdit = editIndex !== null
+    const isEdit = editId !== null
     setSaving(true)
     const res = await fetch('/api/admin/private-media', {
       method: isEdit ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(
-        isEdit ? { index: editIndex, title, videoUrl } : { title, videoUrl }
+        isEdit ? { id: editId, title, videoUrl } : { title, videoUrl }
       ),
     })
     if (res.ok) {
       setTitle('')
       setVideoUrl('')
-      setEditIndex(null)
+      setEditId(null)
       setStatus(isEdit ? 'Video diperbarui!' : 'Video ditambahkan!')
       setItems(await res.json())
     } else {
@@ -55,11 +55,11 @@ export default function EducationMediaPage() {
     setSaving(false)
   }
 
-  async function handleDelete(index: number) {
+  async function handleDelete(id: number) {
     const res = await fetch('/api/admin/private-media', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ index }),
+      body: JSON.stringify({ id }),
     })
     if (res.ok) {
       setItems(await res.json())
@@ -67,15 +67,15 @@ export default function EducationMediaPage() {
     }
   }
 
-  function startEdit(index: number) {
-    setEditIndex(index)
-    setTitle(items[index].title)
-    setVideoUrl(items[index].videoUrl)
+  function startEdit(item: EducationMedia) {
+    setEditId(item.id)
+    setTitle(item.title)
+    setVideoUrl(item.videoUrl)
     setStatus('')
   }
 
   function cancelEdit() {
-    setEditIndex(null)
+    setEditId(null)
     setTitle('')
     setVideoUrl('')
   }
@@ -108,11 +108,11 @@ export default function EducationMediaPage() {
           >
             {saving
               ? 'Menyimpan...'
-              : editIndex !== null
+              : editId !== null
                 ? 'Update Video'
                 : 'Tambah Video'}
           </button>
-          {editIndex !== null && (
+          {editId !== null && (
             <button
               type="button"
               onClick={cancelEdit}
@@ -137,20 +137,20 @@ export default function EducationMediaPage() {
         <p className="text-muted-foreground text-sm">Belum ada data.</p>
       ) : (
         <div className="flex flex-col gap-4">
-          {items.map((item, i) => (
-            <div key={i} className="rounded-lg border p-3">
+          {items.map((item) => (
+            <div key={item.id} className="rounded-lg border p-3">
               <div className="mb-2 flex items-center justify-between">
                 <p className="text-sm font-medium">{item.title}</p>
                 <div className="flex gap-2">
                   <button
-                    onClick={() => startEdit(i)}
+                    onClick={() => startEdit(item)}
                     className="text-sm text-blue-600 hover:underline"
                   >
                     Edit
                   </button>
                   <ConfirmDelete
                     onConfirm={async () => {
-                      await handleDelete(i)
+                      await handleDelete(item.id)
                     }}
                   >
                     <button className="text-sm text-red-600 hover:underline">

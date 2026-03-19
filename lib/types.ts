@@ -1,9 +1,17 @@
-export interface VideoTestimonial {
+export interface User {
   id: string
+  email: string
+  username: string
+}
+
+export interface VideoTestimonial {
+  id: number
+  videoId: string
   title: string
 }
 
 export interface EducationMaterial {
+  id: number
   name: string
   description: string
   videoUrl?: string
@@ -22,14 +30,10 @@ export interface SiteSettings {
 
 export interface Question {
   id: string
+  type?: string
   question: string
   options: string[]
   correctAnswer: number
-}
-
-export interface QuizData {
-  preTest: Question[]
-  postTest: Question[]
 }
 
 export interface QuizResult {
@@ -39,6 +43,7 @@ export interface QuizResult {
 }
 
 export interface Participant {
+  id: number
   phone: string
   name: string
   preTest?: QuizResult
@@ -47,11 +52,7 @@ export interface Participant {
 }
 
 export interface EducationMedia {
+  id: number
   title: string
   videoUrl: string
-}
-
-export interface AdminUser {
-  username: string
-  passwordHash: string
 }

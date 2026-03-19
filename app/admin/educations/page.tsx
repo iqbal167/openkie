@@ -6,16 +6,12 @@ import { ConfirmDelete } from '@/components/confirm-delete'
 import { SkeletonList } from '@/components/skeleton'
 import type { EducationMaterial } from '@/lib/types'
 
-const emptyForm: EducationMaterial = {
-  name: '',
-  description: '',
-  videoUrl: '',
-}
+const emptyForm = { name: '', description: '', videoUrl: '' }
 
 export default function EdukasiPage() {
   const [items, setItems] = useState<EducationMaterial[]>([])
-  const [form, setForm] = useState<EducationMaterial>({ ...emptyForm })
-  const [editIndex, setEditIndex] = useState<number | null>(null)
+  const [form, setForm] = useState({ ...emptyForm })
+  const [editId, setEditId] = useState<number | null>(null)
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -37,16 +33,16 @@ export default function EdukasiPage() {
     if (!form.name || !form.description) return
     setSaving(true)
 
-    const isEdit = editIndex !== null
+    const isEdit = editId !== null
     const res = await fetch('/api/admin/educations', {
       method: isEdit ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(isEdit ? { ...form, index: editIndex } : form),
+      body: JSON.stringify(isEdit ? { id: editId, ...form } : form),
     })
 
     if (res.ok) {
       setForm({ ...emptyForm })
-      setEditIndex(null)
+      setEditId(null)
       setStatus(isEdit ? 'Materi diperbarui!' : 'Materi ditambahkan!')
       setItems(await res.json())
     } else {
@@ -55,11 +51,11 @@ export default function EdukasiPage() {
     setSaving(false)
   }
 
-  async function handleDelete(index: number) {
+  async function handleDelete(id: number) {
     const res = await fetch('/api/admin/educations', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ index }),
+      body: JSON.stringify({ id }),
     })
     if (res.ok) {
       setItems(await res.json())
@@ -67,14 +63,18 @@ export default function EdukasiPage() {
     }
   }
 
-  function startEdit(index: number) {
-    setEditIndex(index)
-    setForm({ ...items[index] })
+  function startEdit(item: EducationMaterial) {
+    setEditId(item.id)
+    setForm({
+      name: item.name,
+      description: item.description,
+      videoUrl: item.videoUrl ?? '',
+    })
     setStatus('')
   }
 
   function cancelEdit() {
-    setEditIndex(null)
+    setEditId(null)
     setForm({ ...emptyForm })
   }
 
@@ -100,7 +100,7 @@ export default function EdukasiPage() {
         />
         <input
           placeholder="URL YouTube (opsional)"
-          value={form.videoUrl ?? ''}
+          value={form.videoUrl}
           onChange={(e) => setForm((f) => ({ ...f, videoUrl: e.target.value }))}
           className="rounded-md border px-3 py-2 text-sm"
         />
@@ -111,9 +111,9 @@ export default function EdukasiPage() {
             disabled={saving}
             className="bg-primary text-primary-foreground rounded-md px-4 py-2 text-sm font-semibold disabled:opacity-50"
           >
-            {saving ? 'Menyimpan...' : editIndex !== null ? 'Update' : 'Tambah'}
+            {saving ? 'Menyimpan...' : editId !== null ? 'Update' : 'Tambah'}
           </button>
-          {editIndex !== null && (
+          {editId !== null && (
             <button
               type="button"
               onClick={cancelEdit}
@@ -132,9 +132,9 @@ export default function EdukasiPage() {
         <p className="text-muted-foreground text-sm">Belum ada data.</p>
       ) : (
         <div className="flex flex-col gap-3">
-          {items.map((item, i) => (
+          {items.map((item) => (
             <div
-              key={i}
+              key={item.id}
               className="flex items-center justify-between rounded-md border p-3"
             >
               <div className="text-sm">
@@ -145,14 +145,14 @@ export default function EdukasiPage() {
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() => startEdit(i)}
+                  onClick={() => startEdit(item)}
                   className="text-sm text-blue-600 hover:underline"
                 >
                   Edit
                 </button>
                 <ConfirmDelete
                   onConfirm={async () => {
-                    await handleDelete(i)
+                    await handleDelete(item.id)
                   }}
                 >
                   <button className="text-sm text-red-600 hover:underline">

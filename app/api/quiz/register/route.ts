@@ -2,28 +2,29 @@ export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
 
-import { getParticipants, saveParticipants } from '@/lib/data'
+import {
+  getParticipantByPhone,
+  getUserByUsername,
+  saveParticipant,
+} from '@/lib/data'
 
 export async function POST(req: Request) {
-  const { phone, name } = await req.json()
-  if (!phone || !name)
+  const { phone, name, username } = await req.json()
+  if (!phone || !name || !username)
     return NextResponse.json(
-      { error: 'Phone and name wajib diisi' },
+      { error: 'Phone, name, username wajib diisi' },
       { status: 400 }
     )
 
-  const participants = await getParticipants()
-  const existing = participants.find((p) => p.phone === phone)
+  const user = await getUserByUsername(username)
+  if (!user)
+    return NextResponse.json({ error: 'User not found' }, { status: 404 })
 
+  const existing = await getParticipantByPhone(user.id, phone)
   if (existing)
     return NextResponse.json({ registered: false, participant: existing })
 
-  const participant = {
-    phone,
-    name,
-    registeredAt: new Date().toISOString(),
-  }
-  participants.push(participant)
-  await saveParticipants(participants)
+  await saveParticipant(user.id, { phone, name })
+  const participant = await getParticipantByPhone(user.id, phone)
   return NextResponse.json({ registered: true, participant })
 }

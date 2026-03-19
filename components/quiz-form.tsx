@@ -13,10 +13,11 @@ interface QuizQuestion {
 interface QuizFormProps {
   type: 'preTest' | 'postTest'
   phone: string
+  username: string
   onComplete: (score: number, total: number) => void
 }
 
-export function QuizForm({ type, phone, onComplete }: QuizFormProps) {
+export function QuizForm({ type, phone, username, onComplete }: QuizFormProps) {
   const [questions, setQuestions] = useState<QuizQuestion[]>([])
   const [answers, setAnswers] = useState<Record<number, number>>({})
   const [loading, setLoading] = useState(true)
@@ -24,11 +25,13 @@ export function QuizForm({ type, phone, onComplete }: QuizFormProps) {
   const [error, setError] = useState('')
 
   const load = useCallback(async () => {
-    const res = await fetch(`/api/quiz/questions?type=${type}`)
+    const res = await fetch(
+      `/api/quiz/questions?type=${type}&username=${username}`
+    )
     const data = await res.json()
     setQuestions(data)
     setLoading(false)
-  }, [type])
+  }, [type, username])
 
   useEffect(() => {
     void load()
@@ -48,7 +51,7 @@ export function QuizForm({ type, phone, onComplete }: QuizFormProps) {
       const res = await fetch('/api/quiz/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, type, answers: ordered }),
+        body: JSON.stringify({ phone, type, answers: ordered, username }),
       })
       const data = await res.json()
       if (res.ok) {

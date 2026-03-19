@@ -37,9 +37,9 @@ export function EdukasiSection({
         {educationMaterials.length === 0 ? (
           <p className="text-muted-foreground text-sm">Belum ada data.</p>
         ) : (
-          educationMaterials.map((metode, i) => (
+          educationMaterials.map((metode) => (
             <button
-              key={i}
+              key={metode.id}
               onClick={() => open(metode)}
               className="flex items-center justify-between rounded-xl border bg-white p-4 text-left shadow-sm transition-shadow hover:shadow-md"
             >

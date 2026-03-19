@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { signOut } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 
 const navLinks = [
   { href: '/admin/settings', label: 'Settings' },
@@ -20,21 +20,32 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   const pathname = usePathname()
-
-  if (pathname === '/admin/login' || pathname === '/admin/setup')
-    return <>{children}</>
+  const { data: session } = useSession()
+  const username = session?.user?.name
 
   return (
     <div className="mx-auto min-h-screen max-w-2xl px-4 py-6">
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
         <h1 className="text-xl font-bold">Admin Panel</h1>
         <button
-          onClick={() => signOut({ callbackUrl: '/admin/login' })}
+          onClick={() => signOut({ callbackUrl: '/login' })}
           className="text-sm text-red-600 hover:underline"
         >
           Logout
         </button>
       </div>
+      {username && (
+        <p className="text-muted-foreground mb-4 text-sm">
+          Landing page:{' '}
+          <Link
+            href={`/u/${username}`}
+            className="text-primary hover:underline"
+            target="_blank"
+          >
+            /u/{username}
+          </Link>
+        </p>
+      )}
       <nav className="mb-6 flex gap-4 border-b pb-3">
         {navLinks.map((link) => (
           <Link

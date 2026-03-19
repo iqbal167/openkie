@@ -1,11 +1,12 @@
 'use client'
 
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-export default function SetupPage() {
+export default function RegisterPage() {
   const router = useRouter()
-  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [error, setError] = useState('')
@@ -23,16 +24,21 @@ export default function SetupPage() {
       return
     }
     setLoading(true)
-    const res = await fetch('/api/admin/setup', {
+    const res = await fetch('/api/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({ email, password }),
     })
     if (res.ok) {
-      router.push('/admin/login')
+      router.push('/login')
     } else {
-      const data = await res.json()
-      setError(data.error || 'Gagal membuat akun.')
+      const text = await res.text()
+      try {
+        const data = JSON.parse(text)
+        setError(data.error || 'Gagal membuat akun.')
+      } catch {
+        setError('Gagal membuat akun.')
+      }
     }
     setLoading(false)
   }
@@ -40,15 +46,13 @@ export default function SetupPage() {
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <h1 className="mb-6 text-center text-2xl font-bold">Setup Admin</h1>
-        <p className="text-muted-foreground mb-6 text-center text-sm">
-          Buat akun admin untuk mengelola aplikasi.
-        </p>
+        <h1 className="mb-6 text-center text-2xl font-bold">Daftar</h1>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
             className="rounded-md border px-3 py-2 text-sm"
           />
@@ -74,9 +78,15 @@ export default function SetupPage() {
             disabled={loading}
             className="bg-primary text-primary-foreground rounded-md px-4 py-2 text-sm font-semibold disabled:opacity-50"
           >
-            {loading ? 'Membuat...' : 'Buat Akun Admin'}
+            {loading ? 'Mendaftar...' : 'Daftar'}
           </button>
         </form>
+        <p className="mt-4 text-center text-sm">
+          Sudah punya akun?{' '}
+          <Link href="/login" className="text-primary hover:underline">
+            Masuk
+          </Link>
+        </p>
       </div>
     </div>
   )

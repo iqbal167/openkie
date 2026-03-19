@@ -12,9 +12,14 @@ type Step = 'register' | 'preTest' | 'edukasi' | 'postTest' | 'done'
 interface QuizGateProps {
   children: React.ReactNode
   educationTitle?: string
+  username: string
 }
 
-export function QuizGate({ children, educationTitle }: QuizGateProps) {
+export function QuizGate({
+  children,
+  educationTitle,
+  username,
+}: QuizGateProps) {
   const [step, setStep] = useState<Step>('register')
   const [phone, setPhone] = useState('')
   const [name, setName] = useState('')
@@ -22,49 +27,53 @@ export function QuizGate({ children, educationTitle }: QuizGateProps) {
   const [postScore, setPostScore] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const checkStatus = useCallback(async (p: string) => {
-    try {
-      const res = await fetch('/api/quiz/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: p, nama: '-' }),
-      })
-      const data = (await res.json()) as {
-        registered: boolean
-        participant: Participant
+  const checkStatus = useCallback(
+    async (p: string) => {
+      try {
+        const res = await fetch('/api/quiz/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: p, name: '-', username }),
+        })
+        const data = (await res.json()) as {
+          registered: boolean
+          participant: Participant
+        }
+        const pt = data.participant
+        setName(pt.name)
+
+        if (pt.preTest) setPreScore(`${pt.preTest.score}/${pt.preTest.total}`)
+        if (pt.postTest)
+          setPostScore(`${pt.postTest.score}/${pt.postTest.total}`)
+
+        if (pt.postTest) setStep('done')
+        else if (pt.preTest) setStep('edukasi')
+        else setStep('preTest')
+      } catch {
+        setStep('register')
       }
-      const pt = data.participant
-      setName(pt.name)
-
-      if (pt.preTest) setPreScore(`${pt.preTest.score}/${pt.preTest.total}`)
-      if (pt.postTest) setPostScore(`${pt.postTest.score}/${pt.postTest.total}`)
-
-      if (pt.postTest) setStep('done')
-      else if (pt.preTest) setStep('edukasi')
-      else setStep('preTest')
-    } catch {
-      setStep('register')
-    }
-  }, [])
+    },
+    [username]
+  )
 
   useEffect(() => {
-    const saved = localStorage.getItem('quiz_phone')
+    const saved = localStorage.getItem(`quiz_phone_${username}`)
     if (saved) {
-      setPhone(saved)
+      setPhone(saved) // eslint-disable-line react-hooks/set-state-in-effect
       void checkStatus(saved)
     }
     setLoading(false)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [checkStatus, username])
 
   function handleRegistered(p: string, n: string) {
+    localStorage.setItem(`quiz_phone_${username}`, p)
     setPhone(p)
     setName(n)
     setStep('preTest')
   }
 
   function switchAccount() {
-    localStorage.removeItem('quiz_phone')
+    localStorage.removeItem(`quiz_phone_${username}`)
     setPhone('')
     setName('')
     setPreScore(null)
@@ -115,7 +124,9 @@ export function QuizGate({ children, educationTitle }: QuizGateProps) {
         {educationTitle || 'Materi Edukasi'}
       </h2>
 
-      {step === 'register' && <PhoneRegister onRegistered={handleRegistered} />}
+      {step === 'register' && (
+        <PhoneRegister onRegistered={handleRegistered} username={username} />
+      )}
 
       {step === 'preTest' && (
         <>
@@ -123,6 +134,7 @@ export function QuizGate({ children, educationTitle }: QuizGateProps) {
           <QuizForm
             type="preTest"
             phone={phone}
+            username={username}
             onComplete={handlePreComplete}
           />
         </>
@@ -157,6 +169,7 @@ export function QuizGate({ children, educationTitle }: QuizGateProps) {
           <QuizForm
             type="postTest"
             phone={phone}
+            username={username}
             onComplete={handlePostComplete}
           />
         </>

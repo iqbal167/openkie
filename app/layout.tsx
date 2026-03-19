@@ -4,25 +4,16 @@ import { Analytics } from '@vercel/analytics/next'
 import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
 
-import { getSettings } from '@/lib/data'
+import { Providers } from '@/components/providers'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
 })
 
-export async function generateMetadata(): Promise<Metadata> {
-  const settings = await getSettings()
-  return {
-    title: settings.siteName,
-    description: settings.siteDescription,
-    openGraph: {
-      title: settings.siteName,
-      description: settings.siteDescription,
-      locale: 'id_ID',
-      type: 'website',
-    },
-  }
+export const metadata: Metadata = {
+  title: 'OpenKIE',
+  description: 'Platform KIE digital open-source',
 }
 
 export default function RootLayout({
@@ -33,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="id">
       <body className={`${geistSans.variable} font-sans antialiased`}>
-        {children}
+        <Providers>{children}</Providers>
         <Analytics />
       </body>
     </html>

@@ -1,17 +1,17 @@
 # OpenKIE
 
-Platform KIE (Komunikasi, Informasi, Edukasi) digital open-source yang bisa di-deploy sendiri (self-hosted). Aplikasi mobile-first untuk media belajar dan sharing materi edukasi, dilengkapi sistem pre-test/post-test dan dashboard admin.
+Platform KIE (Komunikasi, Informasi, Edukasi) digital open-source yang bisa di-deploy sendiri (self-hosted). Setiap user bisa daftar, login, dan punya landing page sendiri untuk sharing materi edukasi — dilengkapi sistem pre-test/post-test.
 
 ![Landing Page](docs/screenshot-landing.png)
 
 ## Fitur
 
-- 📱 Landing page mobile-first dengan QR code
+- 📱 Landing page mobile-first per user (`/u/username`)
 - 🎬 Video sorotan (highlight) dengan YouTube embed
 - 📚 Materi edukasi dengan modal detail
 - ✅ Sistem quiz pre-test & post-test
 - ⚙️ Dashboard admin untuk kelola semua konten
-- 🔐 First-run setup — buat akun admin saat pertama deploy
+- 🔐 Register & login — setiap user kelola data sendiri
 - ✏️ Semua teks dan judul bisa dikustomisasi dari admin
 
 ## Tech Stack
@@ -20,7 +20,7 @@ Platform KIE (Komunikasi, Informasi, Edukasi) digital open-source yang bisa di-d
 - TypeScript
 - Tailwind CSS
 - shadcn/ui
-- [Vercel Blob](https://vercel.com/docs/storage/vercel-blob) (storage)
+- [Supabase](https://supabase.com) (PostgreSQL database)
 - NextAuth v5 (autentikasi)
 
 ---
@@ -29,41 +29,39 @@ Platform KIE (Komunikasi, Informasi, Edukasi) digital open-source yang bisa di-d
 
 Cara paling mudah — klik tombol di bawah:
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/iqbal167/openkie&env=AUTH_SECRET&envDescription=Secret%20untuk%20enkripsi%20session.%20Generate%20di%20link%20berikut.&envLink=https://secretkeygen.vercel.app/&stores=[{"type":"blob"}])
+[![Deploy with Vercel](https://vercel.com/button)](<https://vercel.com/new/clone?repository-url=https://github.com/iqbal167/openkie&env=AUTH_SECRET,SUPABASE_URL,SUPABASE_ANON_KEY&envDescription=Isi%20AUTH_SECRET%20(random%20string)%20dan%20credentials%20Supabase.&envLink=https://secretkeygen.vercel.app/>)
 
-### Langkah-langkah:
+### Prasyarat
+
+Sebelum klik Deploy, buat project Supabase dulu:
+
+1. Buat akun [Supabase](https://supabase.com) (gratis)
+2. Buat project baru → pilih region terdekat
+3. Buka **SQL Editor** → jalankan isi file [`supabase/schema.sql`](supabase/schema.sql) untuk membuat tabel
+4. Buka **Settings** → **API** → catat **Project URL** dan **anon public key**
+
+### Langkah Deploy
 
 1. Buat akun [GitHub](https://github.com/signup) jika belum punya (gratis)
 2. Buat akun [Vercel](https://vercel.com/signup) — bisa langsung pakai akun GitHub
 3. Klik tombol **Deploy with Vercel** di atas
-4. Login ke akun Vercel
+4. Isi environment variables:
 
-   ![Vercel Login](docs/deploy-01-login.png)
+   | Variable            | Nilai                                                                                               |
+   | ------------------- | --------------------------------------------------------------------------------------------------- |
+   | `AUTH_SECRET`       | Random string 32+ karakter. Generate di [secretkeygen.vercel.app](https://secretkeygen.vercel.app/) |
+   | `SUPABASE_URL`      | Project URL dari Supabase dashboard (Settings → API)                                                |
+   | `SUPABASE_ANON_KEY` | anon public key dari Supabase dashboard (Settings → API)                                            |
 
-5. Vercel akan otomatis clone repo ke akun kamu
-6. Isi `AUTH_SECRET` — klik link [secretkeygen.vercel.app](https://secretkeygen.vercel.app/) yang tersedia, copy hasilnya, paste
-
-   ![Set Environment Variable](docs/deploy-02-env.png)
-
-7. Blob store otomatis dibuat oleh Vercel — env var `BLOB_READ_WRITE_TOKEN` langsung terisi tanpa perlu setup manual
-8. Klik **Deploy** dan tunggu sampai selesai
-
-   ![Deploy Success](docs/deploy-03-success.png)
-
-9. Buka URL project → akses `/admin` → akan redirect ke halaman **Setup Admin**
-10. Buat username dan password (min. 6 karakter)
-
-    ![Setup Admin](docs/deploy-04-setup.png)
-
-11. Login dengan credentials yang dibuat — selesai! 🎉
-
-    ![Admin Dashboard](docs/deploy-05-dashboard.png)
+5. Klik **Deploy** dan tunggu sampai selesai
+6. Buka URL project → akan muncul halaman utama
+7. Klik **Daftar** → buat username dan password (min. 6 karakter)
+8. Login → kelola konten di dashboard admin
+9. Landing page kamu ada di `https://<domain>/u/<username>` 🎉
 
 ---
 
 ## Deploy Manual (via GitHub)
-
-Jika ingin fork repo terlebih dahulu:
 
 ### 1. Fork & Clone
 
@@ -72,44 +70,39 @@ git clone https://github.com/<username>/<repo>.git
 cd <repo>
 ```
 
-### 2. Buat Project di Vercel
+### 2. Buat Project Supabase
+
+1. Buat akun di [supabase.com](https://supabase.com)
+2. Buat project baru
+3. Buka **SQL Editor** → jalankan isi file `supabase/schema.sql`
+4. Buka **Settings** → **API** → catat **Project URL** dan **anon public key**
+
+### 3. Buat Project di Vercel
 
 1. Buka [vercel.com/new](https://vercel.com/new)
 2. Import repo GitHub yang sudah di-fork
 3. Framework Preset: **Next.js** (otomatis terdeteksi)
 
-### 3. Buat Blob Store
-
-1. Di dashboard Vercel, buka project → tab **Storage**
-2. Klik **Create Database** → pilih **Blob**
-3. Beri nama (misal: `kie-digital-blob`) → **Create**
-4. Blob store otomatis terhubung ke project, env var `BLOB_READ_WRITE_TOKEN` otomatis ditambahkan
-
-   ![Buat Blob Store](docs/manual-01-blob.png)
-
-### 4. Set Environment Variable
+### 4. Set Environment Variables
 
 Di Vercel dashboard → project → **Settings** → **Environment Variables**, tambahkan:
 
-| Variable      | Nilai                      | Keterangan                                                                                      |
-| ------------- | -------------------------- | ----------------------------------------------------------------------------------------------- |
-| `AUTH_SECRET` | Random string 32+ karakter | Untuk enkripsi session. Generate di [secretkeygen.vercel.app](https://secretkeygen.vercel.app/) |
-
-> `BLOB_READ_WRITE_TOKEN` sudah otomatis dari langkah 3.
-
-![Set Env Var](docs/manual-02-env.png)
+| Variable            | Nilai                      | Keterangan                                                                                      |
+| ------------------- | -------------------------- | ----------------------------------------------------------------------------------------------- |
+| `AUTH_SECRET`       | Random string 32+ karakter | Untuk enkripsi session. Generate di [secretkeygen.vercel.app](https://secretkeygen.vercel.app/) |
+| `SUPABASE_URL`      | Project URL Supabase       | Dari Supabase dashboard → Settings → API                                                        |
+| `SUPABASE_ANON_KEY` | anon public key            | Dari Supabase dashboard → Settings → API                                                        |
 
 ### 5. Deploy
 
 Klik **Deploy**. Setelah selesai, buka URL project.
 
-### 6. Setup Admin
+### 6. Mulai Pakai
 
-1. Buka `https://<domain>/admin`
-2. Akan redirect ke halaman **Setup Admin**
-3. Buat username dan password (min. 6 karakter)
-4. Setelah setup, login dengan credentials yang dibuat
-5. Halaman setup tidak bisa diakses lagi setelah admin dibuat
+1. Buka `https://<domain>/register` → buat akun
+2. Login di `https://<domain>/login`
+3. Kelola konten di dashboard `/admin`
+4. Share landing page kamu: `https://<domain>/u/<username>`
 
 ---
 
@@ -119,6 +112,7 @@ Klik **Deploy**. Setelah selesai, buka URL project.
 
 - Node.js 18+
 - npm
+- Project Supabase (gratis di [supabase.com](https://supabase.com))
 
 ### Setup
 
@@ -134,10 +128,15 @@ Edit `.env.local`:
 
 ```env
 AUTH_SECRET=random-string-minimal-32-karakter
-BLOB_READ_WRITE_TOKEN=vercel_blob_rw_xxx  # dari Vercel Blob dashboard
+SUPABASE_URL=https://xxx.supabase.co
+SUPABASE_ANON_KEY=eyJhbGci...
 ```
 
-> Untuk mendapatkan `BLOB_READ_WRITE_TOKEN`, buat Blob store di Vercel dashboard lalu copy token-nya.
+Jalankan SQL schema di Supabase SQL Editor:
+
+```bash
+# Copy isi file supabase/schema.sql → paste di SQL Editor Supabase → Run
+```
 
 ### Jalankan
 
@@ -149,9 +148,15 @@ Buka [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## Struktur Admin
+## Cara Kerja
 
-![Admin Menu](docs/admin-menu.png)
+1. User daftar di `/register` → login di `/login`
+2. Kelola konten di dashboard `/admin` (settings, video, edukasi, quiz, dll)
+3. Setiap user punya landing page publik di `/u/<username>`
+4. Peserta bisa akses landing page, ikut quiz pre/post-test
+5. Data setiap user terpisah (multi-tenant)
+
+## Struktur Admin
 
 | Menu     | Fungsi                                                 |
 | -------- | ------------------------------------------------------ |
@@ -161,13 +166,15 @@ Buka [http://localhost:3000](http://localhost:3000).
 | Media    | Video edukasi (hanya admin)                            |
 | Quiz     | Kelola soal pre-test & post-test                       |
 | Peserta  | Lihat data peserta & skor quiz                         |
+| Akun     | Ubah username & password                               |
 
 ## Environment Variables
 
-| Variable                | Wajib | Keterangan                    |
-| ----------------------- | ----- | ----------------------------- |
-| `BLOB_READ_WRITE_TOKEN` | ✅    | Token Vercel Blob             |
-| `AUTH_SECRET`           | ✅    | Secret untuk NextAuth session |
+| Variable            | Wajib | Keterangan                    |
+| ------------------- | ----- | ----------------------------- |
+| `AUTH_SECRET`       | ✅    | Secret untuk NextAuth session |
+| `SUPABASE_URL`      | ✅    | URL project Supabase          |
+| `SUPABASE_ANON_KEY` | ✅    | Anon public key dari Supabase |
 
 ## Lisensi
 

@@ -8,8 +8,8 @@ import type { VideoTestimonial } from '@/lib/types'
 
 export default function VideosPage() {
   const [videos, setVideos] = useState<VideoTestimonial[]>([])
-  const [form, setForm] = useState({ id: '', title: '' })
-  const [editIndex, setEditIndex] = useState<number | null>(null)
+  const [form, setForm] = useState({ videoId: '', title: '' })
+  const [editId, setEditId] = useState<number | null>(null)
   const [status, setStatus] = useState('')
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -17,8 +17,7 @@ export default function VideosPage() {
   const load = useCallback(async () => {
     setLoading(true)
     const res = await fetch(`/api/admin/videos?t=${Date.now()}`)
-    const data = await res.json()
-    setVideos(data)
+    setVideos(await res.json())
     setLoading(false)
   }, [])
 
@@ -29,19 +28,19 @@ export default function VideosPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!form.id || !form.title) return
+    if (!form.videoId || !form.title) return
     setSaving(true)
 
-    const isEdit = editIndex !== null
+    const isEdit = editId !== null
     const res = await fetch('/api/admin/videos', {
       method: isEdit ? 'PUT' : 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(isEdit ? { ...form, index: editIndex } : form),
+      body: JSON.stringify(isEdit ? { id: editId, ...form } : form),
     })
 
     if (res.ok) {
-      setForm({ id: '', title: '' })
-      setEditIndex(null)
+      setForm({ videoId: '', title: '' })
+      setEditId(null)
       setStatus(isEdit ? 'Video diperbarui!' : 'Video ditambahkan!')
       setVideos(await res.json())
     } else {
@@ -50,11 +49,11 @@ export default function VideosPage() {
     setSaving(false)
   }
 
-  async function handleDelete(index: number) {
+  async function handleDelete(id: number) {
     const res = await fetch('/api/admin/videos', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ index }),
+      body: JSON.stringify({ id }),
     })
     if (res.ok) {
       setVideos(await res.json())
@@ -62,15 +61,15 @@ export default function VideosPage() {
     }
   }
 
-  function startEdit(index: number) {
-    setEditIndex(index)
-    setForm(videos[index])
+  function startEdit(v: VideoTestimonial) {
+    setEditId(v.id)
+    setForm({ videoId: v.videoId, title: v.title })
     setStatus('')
   }
 
   function cancelEdit() {
-    setEditIndex(null)
-    setForm({ id: '', title: '' })
+    setEditId(null)
+    setForm({ videoId: '', title: '' })
   }
 
   return (
@@ -86,8 +85,8 @@ export default function VideosPage() {
         />
         <input
           placeholder="URL YouTube (misal: https://youtube.com/watch?v=...)"
-          value={form.id}
-          onChange={(e) => setForm((f) => ({ ...f, id: e.target.value }))}
+          value={form.videoId}
+          onChange={(e) => setForm((f) => ({ ...f, videoId: e.target.value }))}
           className="rounded-md border px-3 py-2 text-sm"
         />
         <div className="flex gap-2">
@@ -96,9 +95,9 @@ export default function VideosPage() {
             disabled={saving}
             className="bg-primary text-primary-foreground rounded-md px-4 py-2 text-sm font-semibold disabled:opacity-50"
           >
-            {saving ? 'Menyimpan...' : editIndex !== null ? 'Update' : 'Tambah'}
+            {saving ? 'Menyimpan...' : editId !== null ? 'Update' : 'Tambah'}
           </button>
-          {editIndex !== null && (
+          {editId !== null && (
             <button
               type="button"
               onClick={cancelEdit}
@@ -117,25 +116,25 @@ export default function VideosPage() {
         <p className="text-muted-foreground text-sm">Belum ada data.</p>
       ) : (
         <div className="flex flex-col gap-3">
-          {videos.map((v, i) => (
+          {videos.map((v) => (
             <div
-              key={i}
+              key={v.id}
               className="flex items-center justify-between rounded-md border p-3"
             >
               <div className="text-sm">
                 <p className="font-medium">{v.title}</p>
-                <p className="text-muted-foreground">{v.id}</p>
+                <p className="text-muted-foreground">{v.videoId}</p>
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() => startEdit(i)}
+                  onClick={() => startEdit(v)}
                   className="text-sm text-blue-600 hover:underline"
                 >
                   Edit
                 </button>
                 <ConfirmDelete
                   onConfirm={async () => {
-                    await handleDelete(i)
+                    await handleDelete(v.id)
                   }}
                 >
                   <button className="text-sm text-red-600 hover:underline">

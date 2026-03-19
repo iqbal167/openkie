@@ -21,11 +21,11 @@ export function VideoSection({ videoTestimonials }: VideoSectionProps) {
     <>
       <div className="flex flex-col gap-6">
         {visible.map((video) => (
-          <div key={video.id + video.title}>
+          <div key={video.id}>
             <p className="mb-2 text-sm font-medium">{video.title}</p>
             <div className="bg-muted relative aspect-[9/16] overflow-hidden rounded-lg">
               <iframe
-                src={`https://www.youtube.com/embed/${extractYouTubeId(video.id)}`}
+                src={`https://www.youtube.com/embed/${extractYouTubeId(video.videoId)}`}
                 title={video.title}
                 loading="lazy"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

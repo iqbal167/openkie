@@ -2,35 +2,44 @@ export const dynamic = 'force-dynamic'
 
 import { NextResponse } from 'next/server'
 
-import { getParticipants, getQuizData, saveParticipants } from '@/lib/data'
-import type { Participant } from '@/lib/types'
+import {
+  getParticipantByPhone,
+  getQuizQuestions,
+  getUserByUsername,
+  saveParticipant,
+} from '@/lib/data'
 
 export async function POST(req: Request) {
-  const { phone, type, answers } = (await req.json()) as {
+  const { phone, type, answers, username } = (await req.json()) as {
     phone: string
     type: 'preTest' | 'postTest'
     answers: number[]
+    username: string
   }
 
   if (type !== 'preTest' && type !== 'postTest')
     return NextResponse.json({ error: 'Type tidak valid' }, { status: 400 })
+  if (!username)
+    return NextResponse.json({ error: 'Username required' }, { status: 400 })
 
-  const participants = await getParticipants()
-  const idx = participants.findIndex((p: Participant) => p.phone === phone)
-  if (idx === -1)
+  const user = await getUserByUsername(username)
+  if (!user)
+    return NextResponse.json({ error: 'User not found' }, { status: 404 })
+
+  const participant = await getParticipantByPhone(user.id, phone)
+  if (!participant)
     return NextResponse.json(
       { error: 'Peserta tidak ditemukan' },
       { status: 404 }
     )
 
-  if (participants[idx][type])
+  if (participant[type])
     return NextResponse.json(
       { error: `${type} sudah dikerjakan` },
       { status: 400 }
     )
 
-  const quiz = await getQuizData()
-  const questions = quiz[type]
+  const questions = await getQuizQuestions(user.id, type)
 
   if (!Array.isArray(answers) || answers.length !== questions.length)
     return NextResponse.json(
@@ -39,17 +48,22 @@ export async function POST(req: Request) {
     )
 
   const score = questions.reduce(
-    (acc: number, q, i: number) =>
-      acc + (q.correctAnswer === answers[i] ? 1 : 0),
+    (acc, q, i) => acc + (q.correctAnswer === answers[i] ? 1 : 0),
     0
   )
 
-  participants[idx][type] = {
+  const result = {
     score,
     total: questions.length,
     completedAt: new Date().toISOString(),
   }
-  await saveParticipants(participants)
+
+  await saveParticipant(user.id, {
+    phone: participant.phone,
+    name: participant.name,
+    preTest: type === 'preTest' ? result : participant.preTest,
+    postTest: type === 'postTest' ? result : participant.postTest,
+  })
 
   return NextResponse.json({ score, total: questions.length })
 }

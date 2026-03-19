@@ -3,70 +3,68 @@ export const dynamic = 'force-dynamic'
 import { NextResponse } from 'next/server'
 
 import { auth } from '@/lib/auth'
-import { getQuizData, saveQuizData } from '@/lib/data'
-import type { QuizData } from '@/lib/types'
-
-type QuizType = keyof QuizData
-
-function validType(t: unknown): t is QuizType {
-  return t === 'preTest' || t === 'postTest'
-}
+import {
+  addQuestion,
+  deleteQuestion,
+  getQuizQuestions,
+  updateQuestion,
+} from '@/lib/data'
 
 export const GET = auth(async (req) => {
   if (!req.auth)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const type = new URL(req.url).searchParams.get('type')
-  const quiz = await getQuizData()
-  if (validType(type)) return NextResponse.json(quiz[type])
-  return NextResponse.json(quiz)
+  const userId = req.auth.user!.id!
+  const type = new URL(req.url).searchParams.get('type') as
+    | 'preTest'
+    | 'postTest'
+    | null
+  if (type) return NextResponse.json(await getQuizQuestions(userId, type))
+  const [pre, post] = await Promise.all([
+    getQuizQuestions(userId, 'preTest'),
+    getQuizQuestions(userId, 'postTest'),
+  ])
+  return NextResponse.json({ preTest: pre, postTest: post })
 })
 
 export const POST = auth(async (req) => {
   if (!req.auth)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  const userId = req.auth.user!.id!
   const { type, question } = await req.json()
-  if (!validType(type))
-    return NextResponse.json({ error: 'Type tidak valid' }, { status: 400 })
-  if (!question?.soal || !question?.pilihan?.length)
+  if (!type || !question?.question || !question?.options?.length)
     return NextResponse.json(
       { error: 'Question data incomplete' },
       { status: 400 }
     )
-
-  const quiz = await getQuizData()
-  quiz[type].push({ ...question, id: crypto.randomUUID() })
-  await saveQuizData(quiz)
-  return NextResponse.json(quiz)
+  await addQuestion(userId, {
+    type,
+    question: question.question,
+    options: question.options,
+    correctAnswer: question.correctAnswer,
+  })
+  return NextResponse.json(await getQuizQuestions(userId, type))
 })
 
 export const PUT = auth(async (req) => {
   if (!req.auth)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { type, index, question } = await req.json()
-  if (!validType(type))
-    return NextResponse.json({ error: 'Type tidak valid' }, { status: 400 })
-
-  const quiz = await getQuizData()
-  if (index < 0 || index >= quiz[type].length)
-    return NextResponse.json({ error: 'Index tidak valid' }, { status: 400 })
-
-  quiz[type][index] = { ...question, id: quiz[type][index].id }
-  await saveQuizData(quiz)
-  return NextResponse.json(quiz)
+  const userId = req.auth.user!.id!
+  const { type, id, question } = await req.json()
+  if (!id || !question)
+    return NextResponse.json({ error: 'Invalid data' }, { status: 400 })
+  await updateQuestion(id, userId, {
+    question: question.question,
+    options: question.options,
+    correctAnswer: question.correctAnswer,
+  })
+  return NextResponse.json(await getQuizQuestions(userId, type))
 })
 
 export const DELETE = auth(async (req) => {
   if (!req.auth)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  const { type, index } = await req.json()
-  if (!validType(type))
-    return NextResponse.json({ error: 'Type tidak valid' }, { status: 400 })
-
-  const quiz = await getQuizData()
-  if (index < 0 || index >= quiz[type].length)
-    return NextResponse.json({ error: 'Index tidak valid' }, { status: 400 })
-
-  quiz[type].splice(index, 1)
-  await saveQuizData(quiz)
-  return NextResponse.json(quiz)
+  const userId = req.auth.user!.id!
+  const { type, id } = await req.json()
+  await deleteQuestion(id, userId)
+  return NextResponse.json(await getQuizQuestions(userId, type))
 })
