@@ -5,6 +5,12 @@ import { toast } from 'sonner'
 
 import { ConfirmDelete } from '@/components/confirm-delete'
 import { SkeletonList } from '@/components/skeleton'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import type { EducationMedia } from '@/lib/types'
 import { extractYouTubeId } from '@/lib/utils'
 
@@ -15,6 +21,7 @@ export default function EducationMediaPage() {
   const [editId, setEditId] = useState<number | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [preview, setPreview] = useState<EducationMedia | null>(null)
 
   const load = useCallback(async () => {
     setLoading(true)
@@ -128,43 +135,64 @@ export default function EducationMediaPage() {
       ) : items.length === 0 ? (
         <p className="text-muted-foreground text-sm">Belum ada data.</p>
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-3">
           {items.map((item) => (
-            <div key={item.id} className="rounded-lg border p-3">
-              <div className="mb-2 flex items-center justify-between">
-                <p className="text-sm font-medium">{item.title}</p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => startEdit(item)}
-                    className="text-sm text-blue-600 hover:underline"
-                  >
-                    Edit
-                  </button>
-                  <ConfirmDelete
-                    onConfirm={async () => {
-                      await handleDelete(item.id)
-                    }}
-                  >
-                    <button className="text-sm text-red-600 hover:underline">
-                      Hapus
-                    </button>
-                  </ConfirmDelete>
-                </div>
+            <div
+              key={item.id}
+              className="flex items-center justify-between rounded-md border p-3"
+            >
+              <div className="min-w-0 flex-1 text-sm">
+                <p className="font-medium">{item.title}</p>
+                <p className="text-muted-foreground truncate">
+                  {item.videoUrl}
+                </p>
               </div>
-              <div className="relative aspect-video overflow-hidden rounded-lg">
-                <iframe
-                  src={`https://www.youtube.com/embed/${extractYouTubeId(item.videoUrl)}`}
-                  title={item.title}
-                  loading="lazy"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="absolute inset-0 h-full w-full"
-                />
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setPreview(item)}
+                  className="text-sm text-green-600 hover:underline"
+                >
+                  Lihat
+                </button>
+                <button
+                  onClick={() => startEdit(item)}
+                  className="text-sm text-blue-600 hover:underline"
+                >
+                  Edit
+                </button>
+                <ConfirmDelete
+                  onConfirm={async () => {
+                    await handleDelete(item.id)
+                  }}
+                >
+                  <button className="text-sm text-red-600 hover:underline">
+                    Hapus
+                  </button>
+                </ConfirmDelete>
               </div>
             </div>
           ))}
         </div>
       )}
+
+      <Dialog open={!!preview} onOpenChange={() => setPreview(null)}>
+        <DialogContent className="sm:max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>{preview?.title}</DialogTitle>
+          </DialogHeader>
+          {preview && (
+            <div className="relative aspect-video overflow-hidden rounded-lg">
+              <iframe
+                src={`https://www.youtube.com/embed/${extractYouTubeId(preview.videoUrl)}`}
+                title={preview.title}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 h-full w-full"
+              />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
