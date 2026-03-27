@@ -10,12 +10,18 @@ export default function Loading() {
         </div>
 
         <div className="flex-1">
-          {/* Hero: Banner + Logo */}
-          <Skeleton className="-mx-4 h-48 md:-mx-8 md:h-64" />
-          <div className="flex flex-col items-center gap-4 py-6">
-            <Skeleton className="h-28 w-28 rounded-full md:h-32 md:w-32" />
-            <Skeleton className="h-8 w-3/4 md:h-9" />
-            <Skeleton className="h-4 w-full md:h-5" />
+          {/* Hero: Banner with overlay logo + title */}
+          <div className="relative -mx-4 h-48 md:-mx-8 md:h-64">
+            <Skeleton className="h-full w-full" />
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+              <Skeleton className="h-20 w-20 rounded-full md:h-24 md:w-24" />
+              <Skeleton className="h-6 w-40 md:h-7" />
+            </div>
+          </div>
+          {/* Description */}
+          <div className="-mx-4 mt-4 px-4 py-3 md:-mx-8 md:px-8">
+            <Skeleton className="mx-auto h-4 w-full md:h-5" />
+            <Skeleton className="mx-auto mt-2 h-4 w-2/3" />
           </div>
 
           {/* Sorotan */}

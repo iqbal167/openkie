@@ -60,9 +60,11 @@ export function HeroSection({
         </div>
       )}
 
-      <p className="text-muted-foreground py-4 text-center leading-relaxed md:text-lg">
-        {siteDescription}
-      </p>
+      <div className="-mx-4 mt-4 bg-white/60 px-4 py-3 text-center backdrop-blur-sm md:-mx-8 md:px-8">
+        <p className="leading-relaxed text-gray-700 md:text-lg">
+          {siteDescription}
+        </p>
+      </div>
     </section>
   )
 }
