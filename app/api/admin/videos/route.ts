@@ -7,6 +7,7 @@ import {
   addHighlight,
   deleteHighlight,
   getHighlights,
+  reorderHighlights,
   updateHighlight,
 } from '@/lib/data'
 
@@ -35,7 +36,14 @@ export const PUT = auth(async (req) => {
   if (!req.auth)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const userId = req.auth.user!.id!
-  const { id, videoId, title } = await req.json()
+  const body = await req.json()
+
+  if (body.action === 'reorder') {
+    await reorderHighlights(userId, body.ids)
+    return NextResponse.json(await getHighlights(userId))
+  }
+
+  const { id, videoId, title } = body
   if (!id || !videoId || !title)
     return NextResponse.json(
       { error: 'ID dan judul wajib diisi' },

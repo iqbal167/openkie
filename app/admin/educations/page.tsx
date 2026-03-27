@@ -77,6 +77,22 @@ export default function EdukasiPage() {
     setForm({ ...emptyForm })
   }
 
+  async function handleReorder(from: number, to: number) {
+    const reordered = [...items]
+    const [item] = reordered.splice(from, 1)
+    reordered.splice(to, 0, item)
+    setItems(reordered)
+    const res = await fetch('/api/admin/educations', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'reorder',
+        ids: reordered.map((m) => m.id),
+      }),
+    })
+    if (res.ok) setItems(await res.json())
+  }
+
   return (
     <div>
       <h2 className="mb-4 text-lg font-bold">Kelola Konten Edukasi</h2>
@@ -130,7 +146,7 @@ export default function EdukasiPage() {
         <p className="text-muted-foreground text-sm">Belum ada data.</p>
       ) : (
         <div className="flex flex-col gap-3">
-          {items.map((item) => (
+          {items.map((item, i) => (
             <div
               key={item.id}
               className="flex items-center justify-between rounded-md border p-3"
@@ -142,6 +158,20 @@ export default function EdukasiPage() {
                 </p>
               </div>
               <div className="flex gap-2">
+                <button
+                  onClick={() => handleReorder(i, i - 1)}
+                  disabled={i === 0}
+                  className="text-sm disabled:opacity-30"
+                >
+                  ↑
+                </button>
+                <button
+                  onClick={() => handleReorder(i, i + 1)}
+                  disabled={i === items.length - 1}
+                  className="text-sm disabled:opacity-30"
+                >
+                  ↓
+                </button>
                 <button
                   onClick={() => startEdit(item)}
                   className="text-sm text-blue-600 hover:underline"

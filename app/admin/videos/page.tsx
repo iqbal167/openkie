@@ -71,6 +71,22 @@ export default function VideosPage() {
     setForm({ videoId: '', title: '' })
   }
 
+  async function handleReorder(from: number, to: number) {
+    const reordered = [...videos]
+    const [item] = reordered.splice(from, 1)
+    reordered.splice(to, 0, item)
+    setVideos(reordered)
+    const res = await fetch('/api/admin/videos', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'reorder',
+        ids: reordered.map((v) => v.id),
+      }),
+    })
+    if (res.ok) setVideos(await res.json())
+  }
+
   return (
     <div>
       <h2 className="mb-4 text-lg font-bold">Kelola Video Sorotan</h2>
@@ -114,7 +130,7 @@ export default function VideosPage() {
         <p className="text-muted-foreground text-sm">Belum ada data.</p>
       ) : (
         <div className="flex flex-col gap-3">
-          {videos.map((v) => (
+          {videos.map((v, i) => (
             <div
               key={v.id}
               className="flex items-center justify-between rounded-md border p-3"
@@ -124,6 +140,20 @@ export default function VideosPage() {
                 <p className="text-muted-foreground">{v.videoId}</p>
               </div>
               <div className="flex gap-2">
+                <button
+                  onClick={() => handleReorder(i, i - 1)}
+                  disabled={i === 0}
+                  className="text-sm disabled:opacity-30"
+                >
+                  ↑
+                </button>
+                <button
+                  onClick={() => handleReorder(i, i + 1)}
+                  disabled={i === videos.length - 1}
+                  className="text-sm disabled:opacity-30"
+                >
+                  ↓
+                </button>
                 <button
                   onClick={() => startEdit(v)}
                   className="text-sm text-blue-600 hover:underline"

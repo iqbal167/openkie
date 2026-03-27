@@ -26,6 +26,12 @@ export interface SiteSettings {
   highlightTitle?: string
   educationTitle?: string
   footerText?: string
+  bgColorFrom?: string
+  bgColorTo?: string
+  logoUrl?: string
+  bannerUrl?: string
+  operatingHoursStart?: string
+  operatingHoursEnd?: string
 }
 
 export interface Question {

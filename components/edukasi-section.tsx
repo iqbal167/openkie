@@ -29,7 +29,7 @@ export function EdukasiSection({
   }
 
   return (
-    <section className="py-8">
+    <section id="edukasi" className="scroll-mt-14 py-8">
       <h2 className="mb-4 text-xl font-bold">
         {educationTitle || 'Materi Edukasi'}
       </h2>

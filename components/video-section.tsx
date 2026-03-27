@@ -23,7 +23,7 @@ export function VideoSection({ videoTestimonials }: VideoSectionProps) {
         {visible.map((video) => (
           <div key={video.id}>
             <p className="mb-3 text-base font-semibold">{video.title}</p>
-            <div className="bg-muted relative aspect-[9/16] overflow-hidden rounded-lg">
+            <div className="bg-muted relative aspect-[9/16] overflow-hidden rounded-lg md:aspect-video">
               <iframe
                 src={`https://www.youtube.com/embed/${extractYouTubeId(video.videoId)}`}
                 title={video.title}
@@ -39,7 +39,7 @@ export function VideoSection({ videoTestimonials }: VideoSectionProps) {
       {videoTestimonials.length > 1 && !showAll && (
         <button
           onClick={() => setShowAll(true)}
-          className="mt-4 w-full rounded-lg border py-3 text-sm font-medium transition-colors hover:bg-gray-50"
+          className="mt-4 w-full rounded-lg border border-gray-300 bg-white/70 py-3 text-sm font-medium backdrop-blur-sm transition-colors hover:bg-white"
         >
           Lihat {videoTestimonials.length - 1} Video Lainnya
         </button>

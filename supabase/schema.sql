@@ -17,7 +17,13 @@ CREATE TABLE settings (
   quiz_enabled BOOLEAN NOT NULL DEFAULT false,
   highlight_title TEXT NOT NULL DEFAULT '',
   education_title TEXT NOT NULL DEFAULT '',
-  footer_text TEXT NOT NULL DEFAULT ''
+  footer_text TEXT NOT NULL DEFAULT '',
+  bg_color_from TEXT NOT NULL DEFAULT '#ffffff',
+  bg_color_to TEXT NOT NULL DEFAULT '#ffffff',
+  logo_url TEXT NOT NULL DEFAULT '',
+  banner_url TEXT NOT NULL DEFAULT '',
+  operating_hours_start TEXT NOT NULL DEFAULT '',
+  operating_hours_end TEXT NOT NULL DEFAULT ''
 );
 
 CREATE TABLE highlights (

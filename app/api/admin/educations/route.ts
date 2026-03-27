@@ -7,6 +7,7 @@ import {
   addEducationMaterial,
   deleteEducationMaterial,
   getEducationMaterials,
+  reorderEducationMaterials,
   updateEducationMaterial,
 } from '@/lib/data'
 
@@ -35,7 +36,14 @@ export const PUT = auth(async (req) => {
   if (!req.auth)
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   const userId = req.auth.user!.id!
-  const { id, name, description, videoUrl } = await req.json()
+  const body = await req.json()
+
+  if (body.action === 'reorder') {
+    await reorderEducationMaterials(userId, body.ids)
+    return NextResponse.json(await getEducationMaterials(userId))
+  }
+
+  const { id, name, description, videoUrl } = body
   if (!id || !name || !description)
     return NextResponse.json(
       { error: 'Name and description required' },

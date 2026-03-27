@@ -97,6 +97,12 @@ export async function getSettings(userId: string): Promise<SiteSettings> {
     highlightTitle: data.highlight_title,
     educationTitle: data.education_title,
     footerText: data.footer_text,
+    bgColorFrom: data.bg_color_from ?? '#ffffff',
+    bgColorTo: data.bg_color_to ?? '#ffffff',
+    logoUrl: data.logo_url ?? '',
+    bannerUrl: data.banner_url ?? '',
+    operatingHoursStart: data.operating_hours_start ?? '',
+    operatingHoursEnd: data.operating_hours_end ?? '',
   }
 }
 
@@ -111,6 +117,12 @@ export async function saveSettings(userId: string, s: SiteSettings) {
     highlight_title: s.highlightTitle ?? '',
     education_title: s.educationTitle ?? '',
     footer_text: s.footerText ?? '',
+    bg_color_from: s.bgColorFrom ?? '#ffffff',
+    bg_color_to: s.bgColorTo ?? '#ffffff',
+    logo_url: s.logoUrl ?? '',
+    banner_url: s.bannerUrl ?? '',
+    operating_hours_start: s.operatingHoursStart ?? '',
+    operating_hours_end: s.operatingHoursEnd ?? '',
   })
 }
 
@@ -164,6 +176,18 @@ export async function updateHighlight(
 
 export async function deleteHighlight(id: number, userId: string) {
   await supabase.from('highlights').delete().eq('id', id).eq('user_id', userId)
+}
+
+export async function reorderHighlights(userId: string, ids: number[]) {
+  await Promise.all(
+    ids.map((id, i) =>
+      supabase
+        .from('highlights')
+        .update({ position: i })
+        .eq('id', id)
+        .eq('user_id', userId)
+    )
+  )
 }
 
 // --- Education Materials ---
@@ -226,6 +250,18 @@ export async function deleteEducationMaterial(id: number, userId: string) {
     .delete()
     .eq('id', id)
     .eq('user_id', userId)
+}
+
+export async function reorderEducationMaterials(userId: string, ids: number[]) {
+  await Promise.all(
+    ids.map((id, i) =>
+      supabase
+        .from('education_materials')
+        .update({ position: i })
+        .eq('id', id)
+        .eq('user_id', userId)
+    )
+  )
 }
 
 // --- Education Media (Private) ---
